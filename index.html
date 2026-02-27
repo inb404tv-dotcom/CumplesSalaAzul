@@ -3,38 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎂 Cumples Salita Azul b 2026</title>
+<title>🎂 Cumples del Grado</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<!-- 🔥 FIREBASE SDKs (versión compat, fácil de usar) -->
+<!-- 🔥 Firebase SDKs (todos necesarios) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
 <style>
+  /* (mantén todos los estilos anteriores, iguales) */
   :root {
-    --bg: #F0F8FF;           /* azul muy claro */
+    --bg: #F0F8FF;
     --card: #FFFFFF;
-    --accent: #1E88E5;       /* azul primario */
-    --accent2: #64B5F6;      /* azul claro */
-    --accent3: #42A5F5;      /* azul medio */
-    --accent4: #1565C0;      /* azul oscuro */
+    --accent: #1E88E5;
+    --accent2: #64B5F6;
+    --accent3: #42A5F5;
+    --accent4: #1565C0;
     --text: #0D2B3E;
     --muted: #546E7A;
     --border: #BBDEFB;
     --shadow: 0 4px 20px rgba(21, 101, 192, 0.15);
     --radius: 16px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     font-family: 'Nunito', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
   }
-
-  /* HEADER */
   header {
     background: linear-gradient(135deg, #0D47A1 0%, #1976D2 100%);
     padding: 24px 20px 32px;
@@ -73,8 +71,29 @@
     position: relative;
     z-index: 1;
   }
-
-  /* TABS */
+  .login-container {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px 20px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .login-container h2 {
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .login-container select, .login-container input {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .login-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .login-actions .btn { flex: 1; }
   .tabs {
     display: flex;
     background: white;
@@ -102,14 +121,10 @@
     border-bottom-color: var(--accent);
   }
   .tab-btn:hover:not(.active) { background: #f0f7ff; }
-
-  /* MAIN */
+  .tab-btn.hidden { display: none; }
   main { padding: 20px 16px 80px; max-width: 700px; margin: 0 auto; }
-
   .tab-content { display: none; }
   .tab-content.active { display: block; }
-
-  /* SECTION TITLE */
   .section-title {
     font-family: 'Fredoka One', cursive;
     font-size: 1.3rem;
@@ -119,8 +134,6 @@
     align-items: center;
     gap: 8px;
   }
-
-  /* CARDS */
   .card {
     background: var(--card);
     border-radius: var(--radius);
@@ -134,8 +147,6 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
-  /* FORMS */
   .form-row {
     display: flex;
     gap: 10px;
@@ -155,7 +166,7 @@
     letter-spacing: 0.5px;
     margin-bottom: 5px;
   }
-  input[type="text"], input[type="date"], select, textarea {
+  input[type="text"], input[type="password"], input[type="date"], select, textarea {
     width: 100%;
     padding: 10px 14px;
     border: 2px solid var(--border);
@@ -172,8 +183,6 @@
     background: white;
   }
   textarea { resize: vertical; min-height: 70px; }
-
-  /* BUTTONS */
   .btn {
     padding: 11px 22px;
     border: none;
@@ -196,8 +205,6 @@
   .btn-ghost { background: #E3F2FD; color: var(--accent4); }
   .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; }
   .btn-danger { background: #FFE0E0; color: #B71C1C; }
-
-  /* BIRTHDAY CARDS */
   .bday-card {
     background: var(--card);
     border-radius: var(--radius);
@@ -208,7 +215,6 @@
     transition: box-shadow 0.2s;
   }
   .bday-card:hover { box-shadow: 0 8px 30px rgba(21, 101, 192, 0.2); }
-
   .bday-header {
     padding: 16px 20px;
     display: flex;
@@ -250,15 +256,12 @@
   @keyframes pulse {
     0%, 100% { opacity: 1; } 50% { opacity: 0.6; }
   }
-
   .bday-body {
     padding: 0 20px 20px;
     border-top: 1px solid var(--border);
     display: none;
   }
   .bday-body.open { display: block; }
-
-  /* RECAUDADOR */
   .recaudador-section {
     margin: 14px 0;
     padding: 12px;
@@ -278,8 +281,6 @@
     color: var(--text);
     font-size: 1rem;
   }
-
-  /* CONTRIBUTORS */
   .contributors-title {
     font-size: 0.8rem;
     font-weight: 700;
@@ -309,6 +310,10 @@
     border-color: var(--accent3);
     background: #E3F2FD;
   }
+  .contributor-item.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
   .check-box {
     width: 20px; height: 20px;
     border-radius: 6px;
@@ -326,8 +331,6 @@
     color: white;
   }
   .contributor-name { font-size: 0.88rem; font-weight: 600; }
-
-  /* PROGRESS BAR */
   .progress-wrap { margin: 12px 0; }
   .progress-info {
     display: flex;
@@ -349,8 +352,6 @@
     border-radius: 10px;
     transition: width 0.4s ease;
   }
-
-  /* NOTES */
   .note-section { margin-top: 12px; }
   .note-display {
     padding: 10px 14px;
@@ -363,8 +364,6 @@
     color: var(--text);
   }
   .note-display.empty { color: var(--muted); font-style: italic; }
-
-  /* PARENT LIST */
   .parent-item {
     display: flex;
     align-items: center;
@@ -388,8 +387,6 @@
   }
   .parent-name { font-weight: 700; }
   .parent-role { font-size: 0.78rem; color: var(--muted); }
-
-  /* STATS */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -410,8 +407,6 @@
     color: var(--accent);
   }
   .stat-label { font-size: 0.75rem; color: var(--muted); font-weight: 700; }
-
-  /* MONTH HEADER */
   .month-header {
     font-family: 'Fredoka One', cursive;
     font-size: 1rem;
@@ -422,8 +417,6 @@
     border-radius: 20px;
     display: inline-block;
   }
-
-  /* UPCOMING */
   .next-badge {
     font-size: 0.72rem;
     padding: 3px 8px;
@@ -433,8 +426,6 @@
     color: white;
     margin-left: 8px;
   }
-
-  /* EMPTY STATE */
   .empty {
     text-align: center;
     padding: 40px 20px;
@@ -442,8 +433,6 @@
   }
   .empty-icon { font-size: 3rem; margin-bottom: 12px; }
   .empty p { font-size: 0.95rem; }
-
-  /* FAB */
   .fab {
     position: fixed;
     bottom: 24px;
@@ -464,8 +453,7 @@
   }
   .fab:hover { transform: scale(1.1); background: #1565C0; }
   .fab:active { transform: scale(0.95); }
-
-  /* MODAL */
+  .fab.hidden { display: none; }
   .modal-overlay {
     display: none;
     position: fixed;
@@ -505,8 +493,79 @@
     margin-top: 16px;
   }
   .modal-actions .btn { flex: 1; justify-content: center; }
+  .logout-btn {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: #FFE0E0;
+    color: #B71C1C;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: var(--shadow);
+  }
+  .logout-btn:hover { background: #FFC0C0; }
 
-  /* RESPONSIVE */
+  /* Estilos para archivos */
+  .files-section {
+    margin-top: 16px;
+    padding: 12px;
+    background: #F5F9FF;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .files-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .file-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    word-break: break-word;
+  }
+  .file-icon { font-size: 1.2rem; }
+  .file-name { font-size: 0.9rem; }
+  .file-size { font-size: 0.75rem; color: var(--muted); margin-left: 4px; }
+  .upload-progress {
+    height: 4px;
+    background: #E0E0E0;
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .upload-progress-bar {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.2s;
+  }
+
+  /* Auditoría */
+  .audit-item {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  .audit-user { font-weight: 700; color: var(--accent4); }
+  .audit-action { font-weight: 600; }
+  .audit-time { color: var(--muted); font-size: 0.75rem; }
+
   @media(max-width: 480px) {
     header h1 { font-size: 1.6rem; }
     .stats-grid { grid-template-columns: repeat(3, 1fr); }
@@ -517,105 +576,156 @@
 </head>
 <body>
 
-<header>
-  <h1>🎂 Cumples Salita Azul B 2026</h1>
-  <p>Coordinación de regalos del curso</p>
-</header>
-
-<div class="tabs">
-  <button class="tab-btn active" onclick="showTab('inicio')">🏠 Inicio</button>
-  <button class="tab-btn" onclick="showTab('cumples')">🎂 Cumpleaños</button>
-  <button class="tab-btn" onclick="showTab('padres')">👨‍👩‍👧 Padres</button>
-  <button class="tab-btn" onclick="showTab('config')">⚙️ Config</button>
+<!-- LOGIN CONTAINER -->
+<div id="login-container" class="login-container">
+  <h2>🔐 Acceso al grupo</h2>
+  <div class="form-group">
+    <label>Usuario</label>
+    <select id="login-user-select">
+      <option value="">Seleccioná tu nombre</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Contraseña</label>
+    <input type="password" id="login-password" placeholder="Contraseña">
+  </div>
+  <div class="login-actions">
+    <button class="btn btn-primary" onclick="login()">Entrar</button>
+  </div>
+  <p style="margin-top:20px;font-size:0.85rem;color:var(--muted);">
+    Usá tu nombre y la contraseña que te dio el administrador.
+  </p>
 </div>
 
-<main>
+<!-- APP CONTAINER (visible solo cuando hay sesión) -->
+<div id="app-container" style="display:none;">
+  <header>
+    <h1>🎂 Cumples del Grado</h1>
+    <p>Coordinación de regalos del curso</p>
+  </header>
 
-  <!-- TAB: INICIO -->
-  <div id="tab-inicio" class="tab-content active">
-    <div class="stats-grid" id="stats"></div>
-    <div class="section-title">⏰ Próximos cumpleaños</div>
-    <div id="upcoming-list"></div>
+  <div class="tabs" id="tabs-container">
+    <button class="tab-btn active" onclick="showTab('inicio')">🏠 Inicio</button>
+    <button class="tab-btn" onclick="showTab('cumples')">🎂 Cumpleaños</button>
+    <button class="tab-btn" onclick="showTab('padres')">👨‍👩‍👧 Padres</button>
+    <button class="tab-btn" id="config-tab" onclick="showTab('config')">⚙️ Config</button>
   </div>
 
-  <!-- TAB: CUMPLEAÑOS -->
-  <div id="tab-cumples" class="tab-content">
-    <div class="section-title">🎂 Todos los cumpleaños</div>
-    <div id="bday-list"></div>
-    <div class="empty" id="bday-empty" style="display:none">
-      <div class="empty-icon">🎈</div>
-      <p>No hay cumpleaños aún.<br>¡Agregá alumnos desde el botón +!</p>
+  <main>
+    <!-- TAB: INICIO -->
+    <div id="tab-inicio" class="tab-content active">
+      <div class="stats-grid" id="stats"></div>
+      <div class="section-title">⏰ Próximos cumpleaños</div>
+      <div id="upcoming-list"></div>
     </div>
-  </div>
 
-  <!-- TAB: PADRES -->
-  <div id="tab-padres" class="tab-content">
-    <div class="section-title">👨‍👩‍👧 Lista de padres / familiares</div>
-    <div id="parents-list"></div>
-    <div class="empty" id="parents-empty" style="display:none">
-      <div class="empty-icon">👥</div>
-      <p>No hay padres aún.<br>Agregalos desde el botón +.</p>
+    <!-- TAB: CUMPLEAÑOS -->
+    <div id="tab-cumples" class="tab-content">
+      <div class="section-title">🎂 Todos los cumpleaños</div>
+      <div id="bday-list"></div>
+      <div class="empty" id="bday-empty" style="display:none">
+        <div class="empty-icon">🎈</div>
+        <p>No hay cumpleaños aún.<br>¡Agregá alumnos desde el botón +!</p>
+      </div>
     </div>
-    <div id="add-parent-form" class="card" style="display:none">
-      <div class="modal-title">➕ Nuevo padre/madre</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" id="new-parent-name" placeholder="Ej: María García">
+
+    <!-- TAB: PADRES -->
+    <div id="tab-padres" class="tab-content">
+      <div class="section-title">👨‍👩‍👧 Lista de padres / familiares</div>
+      <div id="parents-list"></div>
+      <div class="empty" id="parents-empty" style="display:none">
+        <div class="empty-icon">👥</div>
+        <p>No hay padres aún.<br>Agregalos desde el botón +.</p>
+      </div>
+      <div id="add-parent-form" class="card" style="display:none">
+        <div class="modal-title">➕ Nuevo padre/madre</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="new-parent-name" placeholder="Ej: María García">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hijo/a (opcional)</label>
+            <input type="text" id="new-parent-child" placeholder="Ej: Lucas">
+          </div>
+          <div class="form-group">
+            <label>Contacto (opcional)</label>
+            <input type="text" id="new-parent-contact" placeholder="WhatsApp o email">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contraseña (por defecto: 1234)</label>
+            <input type="text" id="new-parent-password" placeholder="Contraseña" value="1234">
+          </div>
+          <div class="form-group">
+            <label>Rol</label>
+            <select id="new-parent-role">
+              <option value="user">Usuario</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('add-parent-form').style.display='none'">Cancelar</button>
+          <button class="btn btn-success btn-sm" onclick="saveParent()">✓ Guardar</button>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Hijo/a (opcional)</label>
-          <input type="text" id="new-parent-child" placeholder="Ej: Lucas">
-        </div>
-        <div class="form-group">
-          <label>Contacto (opcional)</label>
-          <input type="text" id="new-parent-contact" placeholder="WhatsApp o email">
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('add-parent-form').style.display='none'">Cancelar</button>
-        <button class="btn btn-success btn-sm" onclick="saveParent()">✓ Guardar</button>
-      </div>
+      <br>
+      <button class="btn btn-info" id="add-parent-btn" onclick="document.getElementById('add-parent-form').style.display='block';document.getElementById('new-parent-name').focus()">
+        ➕ Agregar padre/madre
+      </button>
     </div>
-    <br>
-    <button class="btn btn-info" onclick="document.getElementById('add-parent-form').style.display='block';document.getElementById('new-parent-name').focus()">
-      ➕ Agregar padre/madre
-    </button>
-  </div>
 
-  <!-- TAB: CONFIG -->
-  <div id="tab-config" class="tab-content">
-    <div class="section-title">⚙️ Configuración</div>
-    <div class="card">
-      <div class="recaudador-label">Nombre del grupo / curso</div>
-      <div class="form-row" style="margin-top:8px">
-        <div class="form-group">
-          <input type="text" id="group-name-input" placeholder="Ej: 3° grado B - 2025">
+    <!-- TAB: CONFIG -->
+    <div id="tab-config" class="tab-content">
+      <div class="section-title">⚙️ Configuración</div>
+      <div class="card">
+        <div class="recaudador-label">Nombre del grupo / curso</div>
+        <div class="form-row" style="margin-top:8px">
+          <div class="form-group">
+            <input type="text" id="group-name-input" placeholder="Ej: 3° grado B - 2025">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="saveGroupName()" style="align-self:flex-end;flex-shrink:0">Guardar</button>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="saveGroupName()" style="align-self:flex-end;flex-shrink:0">Guardar</button>
+      </div>
+
+      <!-- SECCIÓN USUARIOS -->
+      <div class="card">
+        <div class="section-title" style="font-size:1.1rem;">👥 Usuarios (contraseñas visibles)</div>
+        <div id="users-list"></div>
+        <button class="btn btn-info btn-sm" onclick="openAddUserModal()">➕ Agregar usuario</button>
+      </div>
+
+      <!-- SECCIÓN AUDITORÍA -->
+      <div class="card">
+        <div class="section-title" style="font-size:1.1rem;">📋 Registro de actividades</div>
+        <div id="audit-logs" style="max-height:400px; overflow-y:auto;"></div>
+        <button class="btn btn-ghost btn-sm" onclick="loadAuditLogs()" style="margin-top:10px;">🔄 Actualizar</button>
+      </div>
+
+      <div class="card">
+        <div class="recaudador-label" style="margin-bottom:8px">Exportar / Importar datos</div>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:12px">Guardá una copia de seguridad de todos los datos.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-warning btn-sm" onclick="exportData()">📤 Exportar JSON</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()">📥 Importar</button>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+        </div>
+      </div>
+      <div class="card">
+        <div class="recaudador-label" style="margin-bottom:8px">Zona de peligro</div>
+        <button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ Borrar todos los datos</button>
       </div>
     </div>
-    <div class="card">
-      <div class="recaudador-label" style="margin-bottom:8px">Exportar / Importar datos</div>
-      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:12px">Guardá una copia de seguridad de todos los datos.</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-warning btn-sm" onclick="exportData()">📤 Exportar JSON</button>
-        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()">📥 Importar</button>
-        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
-      </div>
-    </div>
-    <div class="card">
-      <div class="recaudador-label" style="margin-bottom:8px">Zona de peligro</div>
-      <button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ Borrar todos los datos</button>
-    </div>
-  </div>
+  </main>
 
-</main>
-
-<!-- FAB -->
-<button class="fab" id="fab" onclick="openAddModal()">+</button>
+  <!-- FAB (solo admin) -->
+  <button class="fab" id="fab" onclick="openAddModal()">+</button>
+  <button class="logout-btn" onclick="logout()">🔓 Cerrar sesión</button>
+</div>
 
 <!-- MODAL: AGREGAR CUMPLE -->
 <div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeModal()">
@@ -681,29 +791,132 @@
   </div>
 </div>
 
+<!-- MODAL: AGREGAR USUARIO -->
+<div class="modal-overlay" id="add-user-modal" onclick="if(event.target===this)closeAddUserModal()">
+  <div class="modal">
+    <div class="modal-title">➕ Nuevo usuario</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" id="new-user-name" placeholder="Ej: Ana Pérez">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="text" id="new-user-password" placeholder="Contraseña" value="1234">
+      </div>
+      <div class="form-group">
+        <label>Rol</label>
+        <select id="new-user-role">
+          <option value="user">Usuario</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Hijo/a (opcional)</label>
+        <input type="text" id="new-user-child" placeholder="Ej: Martina">
+      </div>
+      <div class="form-group">
+        <label>Contacto (opcional)</label>
+        <input type="text" id="new-user-contact" placeholder="WhatsApp o email">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAddUserModal()">Cancelar</button>
+      <button class="btn btn-success" onclick="saveUser()">✓ Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDITAR USUARIO -->
+<div class="modal-overlay" id="edit-user-modal" onclick="if(event.target===this)closeEditUserModal()">
+  <div class="modal">
+    <div class="modal-title">✏️ Editar usuario</div>
+    <input type="hidden" id="edit-user-id">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="edit-user-name">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="text" id="edit-user-password">
+      </div>
+      <div class="form-group">
+        <label>Rol</label>
+        <select id="edit-user-role">
+          <option value="user">Usuario</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Hijo/a</label>
+        <input type="text" id="edit-user-child">
+      </div>
+      <div class="form-group">
+        <label>Contacto</label>
+        <input type="text" id="edit-user-contact">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeEditUserModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="updateUser()">💾 Guardar</button>
+      <button class="btn btn-danger" onclick="deleteUserFromEdit()">🗑️ Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SUBIR ARCHIVO -->
+<div class="modal-overlay" id="upload-file-modal" onclick="if(event.target===this)closeUploadModal()">
+  <div class="modal">
+    <div class="modal-title">📎 Subir archivo</div>
+    <div class="form-group">
+      <label>Seleccionar archivo (imagen o PDF)</label>
+      <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.pdf">
+    </div>
+    <div class="upload-progress" id="upload-progress-container" style="display:none;">
+      <div class="upload-progress-bar" id="upload-progress-bar"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeUploadModal()">Cancelar</button>
+      <button class="btn btn-success" onclick="uploadFile()">⬆️ Subir</button>
+    </div>
+    <input type="hidden" id="upload-bday-id">
+  </div>
+</div>
+
 <script>
-// 🔥 CONFIGURACIÓN DE FIREBASE (tus datos)
+// 🔥 CONFIGURACIÓN DE FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyCMK5io8l1BItL_xdKfTnADJoAw8A1CBwU",
   authDomain: "cumples-escolares.firebaseapp.com",
   projectId: "cumples-escolares",
-  storageBucket: "cumples-escolares.firebasestorage.app",
+  storageBucket: "cumples-escolares.firebasestorage.app", // Ojo: .app o .com?
   messagingSenderId: "1097916597306",
   appId: "1:1097916597306:web:c0017dbfacc7669010e103"
 };
 
-// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const storage = firebase.storage();
 
-// Variables globales (se actualizan en tiempo real)
+// Variables globales
 let parents = [];
 let birthdays = [];
+let birthdayFiles = {}; // objeto { bdayId: [array de archivos] }
+let currentUser = null;
+
 const COLORS = ['#1E88E5','#42A5F5','#1976D2','#0D47A1','#64B5F6','#1565C0','#82B1FF','#2962FF'];
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 // Utilidades
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); } // ya no se usa para Firestore, pero la dejamos por si acaso
 function colorFor(name) {
   let h = 0;
   for(let c of name) h = (h*31 + c.charCodeAt(0)) & 0xFFFFFF;
@@ -713,73 +926,149 @@ function initials(name) {
   return name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
 }
 
-// ─── TABS ────────────────────────────────────────────────
-function showTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  event.currentTarget.classList.add('active');
-  render(); // Renderiza con los datos actuales
+// ─── LOGS Y AUDITORÍA ────────────────────────────────────
+async function logAudit(action, details = {}) {
+  if (!currentUser) return;
+  const logEntry = {
+    userId: currentUser.id,
+    userName: currentUser.name,
+    action: action,
+    details: details,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try {
+    await db.collection('audit_logs').add(logEntry);
+  } catch (error) {
+    console.error('Error al guardar log:', error);
+  }
 }
 
-// ─── DATES ───────────────────────────────────────────────
-function parseDate(str) {
-  const [y,m,d] = str.split('-').map(Number);
-  return { year: y, month: m, day: d };
-}
-function getDaysUntil(dateStr) {
-  const today = new Date();
-  const { month, day } = parseDate(dateStr);
-  let next = new Date(today.getFullYear(), month-1, day);
-  if (next < today && !(next.getMonth() === today.getMonth() && next.getDate() === today.getDate())) {
-    next = new Date(today.getFullYear()+1, month-1, day);
+async function logLogin() {
+  if (!currentUser) return;
+  const logEntry = {
+    userId: currentUser.id,
+    userName: currentUser.name,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try {
+    await db.collection('login_logs').add(logEntry);
+  } catch (error) {
+    console.error('Error al guardar login:', error);
   }
-  const diff = Math.floor((next - today) / 86400000);
-  return diff;
 }
-function formatDate(dateStr) {
-  const { year, month, day } = parseDate(dateStr);
-  return `${day} de ${MONTHS[month-1]}`;
-}
-function getBadge(dateStr) {
-  const days = getDaysUntil(dateStr);
-  if (days === 0) return { text: '🎉 ¡HOY!', cls: 'badge-today' };
-  if (days <= 7) return { text: `En ${days} días`, cls: 'badge-upcoming' };
-  if (days <= 30) return { text: `En ${days} días`, cls: 'badge-upcoming' };
-  return { text: formatDate(dateStr), cls: 'badge-past' };
+
+// Cargar logs de auditoría (solo admin)
+async function loadAuditLogs() {
+  if (!currentUser || currentUser.role !== 'admin') return;
+  const container = document.getElementById('audit-logs');
+  container.innerHTML = 'Cargando...';
+  try {
+    const snapshot = await db.collection('audit_logs')
+      .orderBy('timestamp', 'desc')
+      .limit(50)
+      .get();
+    if (snapshot.empty) {
+      container.innerHTML = '<p class="empty">No hay registros</p>';
+      return;
+    }
+    let html = '';
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : 'fecha desconocida';
+      html += `<div class="audit-item">
+        <span class="audit-user">${data.userName}</span>
+        <span class="audit-action">${data.action}</span>
+        <div style="font-size:0.8rem;color:var(--muted);">${JSON.stringify(data.details)}</div>
+        <div class="audit-time">${time}</div>
+      </div>`;
+    });
+    container.innerHTML = html;
+  } catch (error) {
+    container.innerHTML = '<p class="empty">Error al cargar</p>';
+    console.error(error);
+  }
 }
 
 // ─── LISTENERS EN TIEMPO REAL ────────────────────────────
 function listenToParents() {
   db.collection("parents").onSnapshot((snapshot) => {
-    parents = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    render(); // Actualiza toda la interfaz
-  }, (error) => {
-    console.error("Error al escuchar padres: ", error);
-  });
+    parents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    if (currentUser) {
+      const updated = parents.find(p => p.id === currentUser.id);
+      if (updated) currentUser = updated;
+      else logout();
+    }
+    render();
+    updateLoginSelect();
+    ensureAdminExists();
+  }, (error) => console.error("Error al escuchar padres: ", error));
 }
 
 function listenToBirthdays() {
   db.collection("birthdays").onSnapshot((snapshot) => {
-    birthdays = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    birthdays = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     render();
-  }, (error) => {
-    console.error("Error al escuchar cumpleaños: ", error);
-  });
+  }, (error) => console.error("Error al escuchar cumpleaños: ", error));
+}
+
+function listenToFiles() {
+  // Escuchar todos los archivos de la colección birthday_files
+  db.collection("birthday_files").onSnapshot((snapshot) => {
+    birthdayFiles = {};
+    snapshot.docs.forEach(doc => {
+      const file = { id: doc.id, ...doc.data() };
+      const bdayId = file.birthdayId;
+      if (!birthdayFiles[bdayId]) birthdayFiles[bdayId] = [];
+      birthdayFiles[bdayId].push(file);
+    });
+    render(); // para actualizar las vistas de archivos
+  }, (error) => console.error("Error al escuchar archivos:", error));
+}
+
+// ─── LOGIN ───────────────────────────────────────────────
+function updateLoginSelect() {
+  const select = document.getElementById('login-user-select');
+  select.innerHTML = '<option value="">Seleccioná tu nombre</option>' +
+    parents.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+}
+
+function login() {
+  const userId = document.getElementById('login-user-select').value;
+  const password = document.getElementById('login-password').value;
+  if (!userId) { alert('Seleccioná un usuario'); return; }
+  const user = parents.find(p => p.id === userId);
+  if (!user) { alert('Usuario no encontrado'); return; }
+  if (user.password !== password) { alert('Contraseña incorrecta'); return; }
+  currentUser = user;
+  document.getElementById('login-container').style.display = 'none';
+  document.getElementById('app-container').style.display = 'block';
+  if (currentUser.role !== 'admin') {
+    document.getElementById('config-tab').classList.add('hidden');
+    document.getElementById('fab').classList.add('hidden');
+  } else {
+    document.getElementById('config-tab').classList.remove('hidden');
+    document.getElementById('fab').classList.remove('hidden');
+    loadAuditLogs(); // precargar auditoría
+  }
+  logLogin(); // registrar login
+  render();
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById('login-container').style.display = 'block';
+  document.getElementById('app-container').style.display = 'none';
+  document.getElementById('login-password').value = '';
 }
 
 // ─── RENDER ──────────────────────────────────────────────
 function render() {
+  if (!currentUser) return;
   renderStats();
   renderUpcoming();
   renderBirthdays();
   renderParents();
+  renderUsersList();
   populateSelects();
 }
 
@@ -798,12 +1087,10 @@ function renderUpcoming() {
     .map(b => ({ ...b, days: getDaysUntil(b.date) }))
     .sort((a,b) => a.days - b.days)
     .slice(0, 5);
-
   if (!sorted.length) {
     document.getElementById('upcoming-list').innerHTML = `<div class="empty"><div class="empty-icon">📅</div><p>Agregá cumpleaños desde la pestaña 🎂</p></div>`;
     return;
   }
-
   document.getElementById('upcoming-list').innerHTML = sorted.map(b => {
     const badge = getBadge(b.date);
     const recName = b.recaudador ? (parents.find(p=>p.id===b.recaudador)?.name || '—') : 'Sin asignar';
@@ -833,25 +1120,21 @@ function showTab_cumples() {
 function renderBirthdays() {
   const list = document.getElementById('bday-list');
   const empty = document.getElementById('bday-empty');
-
   if (!birthdays.length) {
     list.innerHTML = '';
     empty.style.display = 'block';
     return;
   }
   empty.style.display = 'none';
-
   const sorted = [...birthdays]
     .map(b => ({ ...b, days: getDaysUntil(b.date) }))
     .sort((a,b) => a.days - b.days);
-
   const byMonth = {};
   sorted.forEach(b => {
     const { month } = parseDate(b.date);
     if (!byMonth[month]) byMonth[month] = [];
     byMonth[month].push(b);
   });
-
   let html = '';
   for (const month of Object.keys(byMonth).sort((a,b)=>a-b)) {
     html += `<div class="month-header">📅 ${MONTHS[month-1]}</div>`;
@@ -871,13 +1154,30 @@ function renderBdayCard(b) {
 
   const contributorsHTML = parents.length ? parents.map(p => {
     const checked = contributors.includes(p.id);
-    return `<div class="contributor-item ${checked?'checked':''}" onclick="toggleContributor('${b.id}','${p.id}')">
+    const isSelf = currentUser && p.id === currentUser.id;
+    const canToggle = currentUser.role === 'admin' || (isSelf && !checked);
+    const disabledClass = (!canToggle && checked) ? 'disabled' : '';
+    return `<div class="contributor-item ${checked?'checked':''} ${disabledClass}" onclick="if(${canToggle}) toggleContributor('${b.id}','${p.id}')">
       <div class="check-box">${checked?'✓':''}</div>
       <span class="contributor-name">${p.name}</span>
     </div>`;
   }).join('') : `<p style="color:var(--muted);font-size:0.85rem">Primero agregá padres en la pestaña 👨‍👩‍👧</p>`;
 
   const noteText = b.note || '';
+  const deleteButton = currentUser.role === 'admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteBirthday('${b.id}')">🗑️ Eliminar</button>` : '';
+
+  // Archivos asociados
+  const files = birthdayFiles[b.id] || [];
+  const filesHTML = files.map(f => `
+    <div class="file-item">
+      <div class="file-info">
+        <span class="file-icon">${f.fileType?.startsWith('image/') ? '🖼️' : '📄'}</span>
+        <a href="${f.url}" target="_blank" class="file-name">${f.fileName}</a>
+        <span class="file-size">${(f.fileSize/1024).toFixed(1)} KB</span>
+      </div>
+      ${currentUser.role === 'admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteFile('${f.id}','${b.id}')">✕</button>` : ''}
+    </div>
+  `).join('');
 
   return `<div class="bday-card" id="bday-${b.id}">
     <div class="bday-header" onclick="toggleBody('${b.id}')" style="border-left:4px solid ${colorFor(b.name)}">
@@ -893,7 +1193,7 @@ function renderBdayCard(b) {
         <div class="recaudador-label">🙋 Recaudador/a</div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <div class="recaudador-name">${rec ? rec.name : '⚠️ Sin asignar'}</div>
-          <button class="btn btn-warning btn-sm" onclick="openRecModal('${b.id}')">Cambiar</button>
+          ${currentUser.role === 'admin' ? `<button class="btn btn-warning btn-sm" onclick="openRecModal('${b.id}')">Cambiar</button>` : ''}
         </div>
       </div>
 
@@ -913,9 +1213,20 @@ function renderBdayCard(b) {
         <div class="note-display ${noteText?'':'empty'}" onclick="openNoteModal('${b.id}')">${noteText || 'Tap para agregar monto, link de pago, etc...'}</div>
       </div>
 
+      <!-- Archivos adjuntos -->
+      <div class="files-section">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="contributors-title">📎 Archivos adjuntos</div>
+          <button class="btn btn-info btn-sm" onclick="openUploadModal('${b.id}')">➕ Subir archivo</button>
+        </div>
+        <div class="files-list" id="files-${b.id}">
+          ${filesHTML || '<p style="color:var(--muted);">No hay archivos</p>'}
+        </div>
+      </div>
+
       <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
         <button class="btn btn-ghost btn-sm" onclick="shareStatus('${b.id}')">📋 Copiar estado</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteBirthday('${b.id}')">🗑️ Eliminar</button>
+        ${deleteButton}
       </div>
     </div>
   </div>`;
@@ -940,11 +1251,26 @@ function renderParents() {
       <div class="parent-info">
         <div class="parent-avatar" style="background:${colorFor(p.name)}">${initials(p.name)}</div>
         <div>
-          <div class="parent-name">${p.name}</div>
+          <div class="parent-name">${p.name} ${p.role === 'admin' ? '👑' : ''}</div>
           <div class="parent-role">${p.childName ? '👦 '+p.childName : ''} ${p.contact ? '· '+p.contact : ''}</div>
         </div>
       </div>
-      <button class="btn btn-danger btn-sm" onclick="deleteParent('${p.id}')">✕</button>
+      ${currentUser.role === 'admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteParent('${p.id}')">✕</button>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderUsersList() {
+  if (currentUser.role !== 'admin') return;
+  const container = document.getElementById('users-list');
+  if (!container) return;
+  container.innerHTML = parents.map(p => `
+    <div class="parent-item" style="cursor:pointer;" onclick="openEditUserModal('${p.id}')">
+      <div>
+        <strong>${p.name}</strong> (${p.role})<br>
+        <span style="font-size:0.85rem;color:var(--muted)">Contraseña: ${p.password} | Hijo: ${p.childName || '-'} | Contacto: ${p.contact || '-'}</span>
+      </div>
+      <span style="color:var(--accent)">✏️</span>
     </div>
   `).join('');
 }
@@ -956,8 +1282,36 @@ function populateSelects() {
   document.getElementById('rec-select').innerHTML = opts;
 }
 
+// ─── FECHAS ──────────────────────────────────────────────
+function parseDate(str) {
+  const [y,m,d] = str.split('-').map(Number);
+  return { year: y, month: m, day: d };
+}
+function getDaysUntil(dateStr) {
+  const today = new Date();
+  const { month, day } = parseDate(dateStr);
+  let next = new Date(today.getFullYear(), month-1, day);
+  if (next < today && !(next.getMonth() === today.getMonth() && next.getDate() === today.getDate())) {
+    next = new Date(today.getFullYear()+1, month-1, day);
+  }
+  const diff = Math.floor((next - today) / 86400000);
+  return diff;
+}
+function formatDate(dateStr) {
+  const { year, month, day } = parseDate(dateStr);
+  return `${day} de ${MONTHS[month-1]}`;
+}
+function getBadge(dateStr) {
+  const days = getDaysUntil(dateStr);
+  if (days === 0) return { text: '🎉 ¡HOY!', cls: 'badge-today' };
+  if (days <= 7) return { text: `En ${days} días`, cls: 'badge-upcoming' };
+  if (days <= 30) return { text: `En ${days} días`, cls: 'badge-upcoming' };
+  return { text: formatDate(dateStr), cls: 'badge-past' };
+}
+
 // ─── ACCIONES SOBRE FIREBASE ─────────────────────────────
 function openAddModal() {
+  if (currentUser.role !== 'admin') return;
   document.getElementById('modal-name').value = '';
   document.getElementById('modal-date').value = '';
   populateSelects();
@@ -966,72 +1320,90 @@ function openAddModal() {
 }
 function closeModal() { document.getElementById('add-modal').classList.remove('open'); }
 
-function saveBirthday() {
+async function saveBirthday() {
+  if (currentUser.role !== 'admin') return;
   const name = document.getElementById('modal-name').value.trim();
   const date = document.getElementById('modal-date').value;
   const recaudadorId = document.getElementById('modal-recaudador').value;
-
   if (!name || !date) { alert('Por favor completá el nombre y la fecha.'); return; }
-
-  db.collection("birthdays").add({
-    name: name,
-    date: date,
-    recaudador: recaudadorId || '',
-    contributors: [],
-    note: ''
-  }).then(() => {
+  try {
+    await db.collection("birthdays").add({
+      name, date,
+      recaudador: recaudadorId || '',
+      contributors: [],
+      note: ''
+    });
+    await logAudit('crear cumpleaños', { nombre: name, fecha: date });
     closeModal();
-  }).catch((error) => {
-    alert('Error al guardar: ' + error.message);
-  });
+  } catch (error) {
+    alert('Error: ' + error.message);
+  }
 }
 
 function deleteBirthday(id) {
+  if (currentUser.role !== 'admin') return;
   if (!confirm('¿Eliminar este cumpleaños?')) return;
-  db.collection("birthdays").doc(id).delete().catch(error => alert('Error: ' + error.message));
+  const b = birthdays.find(b => b.id === id);
+  db.collection("birthdays").doc(id).delete()
+    .then(() => logAudit('eliminar cumpleaños', { nombre: b?.name, id }))
+    .catch(error => alert('Error: ' + error.message));
 }
 
 function saveParent() {
+  if (currentUser.role !== 'admin') return;
   const name = document.getElementById('new-parent-name').value.trim();
   if (!name) { alert('Ingresá el nombre.'); return; }
   const childName = document.getElementById('new-parent-child').value.trim();
   const contact = document.getElementById('new-parent-contact').value.trim();
-
+  const password = document.getElementById('new-parent-password').value.trim() || '1234';
+  const role = document.getElementById('new-parent-role').value;
   db.collection("parents").add({
-    name: name,
-    childName: childName || '',
-    contact: contact || ''
+    name, childName: childName || '', contact: contact || '', password, role
   }).then(() => {
     document.getElementById('new-parent-name').value = '';
     document.getElementById('new-parent-child').value = '';
     document.getElementById('new-parent-contact').value = '';
+    document.getElementById('new-parent-password').value = '1234';
+    document.getElementById('new-parent-role').value = 'user';
     document.getElementById('add-parent-form').style.display = 'none';
-  }).catch((error) => {
-    alert('Error al guardar: ' + error.message);
-  });
+    logAudit('crear padre', { nombre: name, role });
+  }).catch(error => alert('Error: ' + error.message));
 }
 
 function deleteParent(id) {
+  if (currentUser.role !== 'admin') return;
   if (!confirm('¿Eliminar este padre/madre?')) return;
-  db.collection("parents").doc(id).delete().catch(error => alert('Error: ' + error.message));
+  const p = parents.find(p => p.id === id);
+  db.collection("parents").doc(id).delete()
+    .then(() => logAudit('eliminar padre', { nombre: p?.name, id }))
+    .catch(error => alert('Error: ' + error.message));
 }
 
-function toggleContributor(bdayId, parentId) {
+async function toggleContributor(bdayId, parentId) {
   const bday = birthdays.find(b => b.id === bdayId);
   if (!bday) return;
   const contributors = bday.contributors || [];
-  const newContributors = contributors.includes(parentId)
+  const isSelf = currentUser.id === parentId;
+  const alreadyChecked = contributors.includes(parentId);
+  if (currentUser.role !== 'admin' && (!isSelf || alreadyChecked)) return;
+  const newContributors = alreadyChecked
     ? contributors.filter(id => id !== parentId)
     : [...contributors, parentId];
-
-  db.collection("birthdays").doc(bdayId).update({
-    contributors: newContributors
-  }).catch(error => alert('Error: ' + error.message));
+  try {
+    await db.collection("birthdays").doc(bdayId).update({ contributors: newContributors });
+    await logAudit(alreadyChecked ? 'desmarcar aporte' : 'marcar aporte', {
+      cumpleaños: bday.name,
+      padre: parents.find(p => p.id === parentId)?.name
+    });
+  } catch (error) {
+    alert('Error: ' + error.message);
+  }
 }
 
 // Recaudador modal
 let _recBdayId = null;
 function openRecModal(bdayId) {
+  if (currentUser.role !== 'admin') return;
   _recBdayId = bdayId;
   populateSelects();
   const b = birthdays.find(b=>b.id===bdayId);
@@ -1039,14 +1411,20 @@ function openRecModal(bdayId) {
   document.getElementById('rec-modal').classList.add('open');
 }
 function closeRecModal() { document.getElementById('rec-modal').classList.remove('open'); }
-function saveRecaudador() {
+async function saveRecaudador() {
   const bdayId = _recBdayId;
   const recaudadorId = document.getElementById('rec-select').value;
-  db.collection("birthdays").doc(bdayId).update({
-    recaudador: recaudadorId
-  }).then(() => {
+  const b = birthdays.find(b => b.id === bdayId);
+  try {
+    await db.collection("birthdays").doc(bdayId).update({ recaudador: recaudadorId });
+    await logAudit('cambiar recaudador', {
+      cumpleaños: b?.name,
+      nuevoRecaudador: parents.find(p => p.id === recaudadorId)?.name || 'ninguno'
+    });
     closeRecModal();
-  }).catch(error => alert('Error: ' + error.message));
+  } catch (error) {
+    alert('Error: ' + error.message);
+  }
 }
 
 // Note modal
@@ -1058,17 +1436,107 @@ function openNoteModal(bdayId) {
   document.getElementById('note-modal').classList.add('open');
 }
 function closeNoteModal() { document.getElementById('note-modal').classList.remove('open'); }
-function saveNote() {
+async function saveNote() {
   const bdayId = _noteBdayId;
   const noteText = document.getElementById('note-textarea').value.trim();
-  db.collection("birthdays").doc(bdayId).update({
-    note: noteText
-  }).then(() => {
+  const b = birthdays.find(b => b.id === bdayId);
+  try {
+    await db.collection("birthdays").doc(bdayId).update({ note: noteText });
+    await logAudit('editar nota', { cumpleaños: b?.name });
     closeNoteModal();
-  }).catch(error => alert('Error: ' + error.message));
+  } catch (error) {
+    alert('Error: ' + error.message);
+  }
 }
 
-// Share status (solo copia texto local, no necesita Firebase)
+// Archivos
+function openUploadModal(bdayId) {
+  document.getElementById('upload-bday-id').value = bdayId;
+  document.getElementById('file-input').value = '';
+  document.getElementById('upload-progress-container').style.display = 'none';
+  document.getElementById('upload-file-modal').classList.add('open');
+}
+function closeUploadModal() {
+  document.getElementById('upload-file-modal').classList.remove('open');
+}
+async function uploadFile() {
+  const bdayId = document.getElementById('upload-bday-id').value;
+  const fileInput = document.getElementById('file-input');
+  if (!fileInput.files.length) { alert('Seleccioná un archivo'); return; }
+  const file = fileInput.files[0];
+  // Validar tipo (imagen o PDF)
+  if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+    alert('Solo se permiten imágenes o PDF');
+    return;
+  }
+  const bday = birthdays.find(b => b.id === bdayId);
+  const fileName = `${Date.now()}_${file.name}`;
+  const storageRef = storage.ref(`cumples/${bdayId}/${fileName}`);
+  const uploadTask = storageRef.put(file);
+
+  // Mostrar progreso
+  const progressContainer = document.getElementById('upload-progress-container');
+  const progressBar = document.getElementById('upload-progress-bar');
+  progressContainer.style.display = 'block';
+  progressBar.style.width = '0%';
+
+  uploadTask.on('state_changed',
+    (snapshot) => {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      progressBar.style.width = progress + '%';
+    },
+    (error) => {
+      alert('Error al subir: ' + error.message);
+      progressContainer.style.display = 'none';
+    },
+    async () => {
+      // Subida completa
+      const url = await uploadTask.snapshot.ref.getDownloadURL();
+      // Guardar referencia en Firestore
+      try {
+        await db.collection('birthday_files').add({
+          birthdayId: bdayId,
+          fileName: file.name,
+          fileType: file.type,
+          fileSize: file.size,
+          url: url,
+          uploadedBy: currentUser.id,
+          uploadedByName: currentUser.name,
+          uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        await logAudit('subir archivo', {
+          cumpleaños: bday?.name,
+          archivo: file.name
+        });
+        closeUploadModal();
+      } catch (error) {
+        alert('Error al guardar referencia: ' + error.message);
+      }
+    }
+  );
+}
+
+async function deleteFile(fileId, bdayId) {
+  if (currentUser.role !== 'admin') return;
+  if (!confirm('¿Eliminar este archivo?')) return;
+  try {
+    // Obtener la referencia del archivo
+    const fileDoc = await db.collection('birthday_files').doc(fileId).get();
+    if (fileDoc.exists) {
+      const fileData = fileDoc.data();
+      // Eliminar de Storage
+      const fileRef = storage.refFromURL(fileData.url);
+      await fileRef.delete();
+      // Eliminar de Firestore
+      await db.collection('birthday_files').doc(fileId).delete();
+      await logAudit('eliminar archivo', { archivo: fileData.fileName });
+    }
+  } catch (error) {
+    alert('Error al eliminar: ' + error.message);
+  }
+}
+
+// Share status
 function shareStatus(bdayId) {
   const b = birthdays.find(b=>b.id===bdayId);
   if (!b) return;
@@ -1083,7 +1551,7 @@ function shareStatus(bdayId) {
   navigator.clipboard.writeText(txt).then(()=>alert('¡Copiado! Podés pegarlo en WhatsApp 📋')).catch(()=>prompt('Copia este texto:', txt));
 }
 
-// Config (se mantiene en localStorage porque es local)
+// Config
 function updateGroupName() {
   const input = document.getElementById('group-name-input');
   if (input) input.value = localStorage.getItem('groupName') || 'Mi Grupo Escolar';
@@ -1096,12 +1564,8 @@ function saveGroupName() {
   alert('¡Guardado!');
 }
 
-// Exportar/Importar (desde localStorage, pero podemos exportar también Firebase)
 function exportData() {
-  // Exporta solo la configuración local y los nombres (opcional)
-  const localData = {
-    groupName: localStorage.getItem('groupName') || 'Mi Grupo Escolar'
-  };
+  const localData = { groupName: localStorage.getItem('groupName') || 'Mi Grupo Escolar' };
   const blob = new Blob([JSON.stringify(localData, null, 2)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1119,7 +1583,7 @@ function importData(input) {
         localStorage.setItem('groupName', localData.groupName);
         updateGroupName();
       }
-      alert('Configuración importada. Los cumpleaños y padres están en la nube.');
+      alert('Configuración importada.');
     } catch(err) { alert('Error al leer el archivo.'); }
   };
   reader.readAsText(file);
@@ -1127,32 +1591,121 @@ function importData(input) {
 }
 function clearAllData() {
   if (!confirm('⚠️ ¿Borrar TODOS los datos de la nube? Esta acción no se puede deshacer.')) return;
-  // Borra todas las colecciones (riesgoso, mejor deshabilitar o usar con cuidado)
-  // Por seguridad, solo limpiamos los padres y cumpleaños uno por uno (lento pero seguro)
   Promise.all([
     ...parents.map(p => db.collection("parents").doc(p.id).delete()),
     ...birthdays.map(b => db.collection("birthdays").doc(b.id).delete())
-  ]).then(() => {
-    alert('Datos eliminados.');
+  ]).then(() => alert('Datos eliminados.'))
+    .catch(error => alert('Error: ' + error.message));
+}
+
+// ─── USUARIOS (Config) ───────────────────────────────────
+function openAddUserModal() {
+  if (currentUser.role !== 'admin') return;
+  document.getElementById('new-user-name').value = '';
+  document.getElementById('new-user-password').value = '1234';
+  document.getElementById('new-user-role').value = 'user';
+  document.getElementById('new-user-child').value = '';
+  document.getElementById('new-user-contact').value = '';
+  document.getElementById('add-user-modal').classList.add('open');
+}
+function closeAddUserModal() { document.getElementById('add-user-modal').classList.remove('open'); }
+function saveUser() {
+  const name = document.getElementById('new-user-name').value.trim();
+  if (!name) { alert('Ingresá el nombre'); return; }
+  const password = document.getElementById('new-user-password').value.trim() || '1234';
+  const role = document.getElementById('new-user-role').value;
+  const childName = document.getElementById('new-user-child').value.trim();
+  const contact = document.getElementById('new-user-contact').value.trim();
+  db.collection("parents").add({
+    name, password, role,
+    childName: childName || '',
+    contact: contact || ''
+  }).then(() => {
+    logAudit('crear usuario', { nombre: name, role });
+    closeAddUserModal();
   }).catch(error => alert('Error: ' + error.message));
+}
+function openEditUserModal(userId) {
+  const user = parents.find(p => p.id === userId);
+  if (!user) return;
+  document.getElementById('edit-user-id').value = user.id;
+  document.getElementById('edit-user-name').value = user.name;
+  document.getElementById('edit-user-password').value = user.password || '';
+  document.getElementById('edit-user-role').value = user.role || 'user';
+  document.getElementById('edit-user-child').value = user.childName || '';
+  document.getElementById('edit-user-contact').value = user.contact || '';
+  document.getElementById('edit-user-modal').classList.add('open');
+}
+function closeEditUserModal() { document.getElementById('edit-user-modal').classList.remove('open'); }
+function updateUser() {
+  const id = document.getElementById('edit-user-id').value;
+  const name = document.getElementById('edit-user-name').value.trim();
+  const password = document.getElementById('edit-user-password').value.trim();
+  const role = document.getElementById('edit-user-role').value;
+  const childName = document.getElementById('edit-user-child').value.trim();
+  const contact = document.getElementById('edit-user-contact').value.trim();
+  if (!name) { alert('El nombre no puede estar vacío'); return; }
+  db.collection("parents").doc(id).update({
+    name, password, role,
+    childName: childName || '',
+    contact: contact || ''
+  }).then(() => {
+    logAudit('editar usuario', { nombre: name, role });
+    closeEditUserModal();
+  }).catch(error => alert('Error: ' + error.message));
+}
+function deleteUserFromEdit() {
+  const id = document.getElementById('edit-user-id').value;
+  if (!confirm('¿Eliminar este usuario?')) return;
+  db.collection("parents").doc(id).delete()
+    .then(() => {
+      logAudit('eliminar usuario', { id });
+      closeEditUserModal();
+    })
+    .catch(error => alert('Error: ' + error.message));
+}
+
+// ─── ADMIN AUTOMÁTICO ────────────────────────────────────
+function ensureAdminExists() {
+  const adminExists = parents.some(p => p.role === 'admin');
+  if (!adminExists && parents.length === 0) {
+    db.collection("parents").add({
+      name: "Felipe T.",
+      password: "221089",
+      role: "admin",
+      childName: "",
+      contact: ""
+    }).then(() => {
+      console.log('Admin creado automáticamente');
+    }).catch(error => console.error('Error al crear admin:', error));
+  }
+}
+
+// ─── TABS ────────────────────────────────────────────────
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+  render();
+  if (tab === 'config' && currentUser.role === 'admin') loadAuditLogs();
 }
 
 // ─── INICIALIZACIÓN ─────────────────────────────────────
-// Escuchar cambios en tiempo real
 listenToParents();
 listenToBirthdays();
+listenToFiles();
 updateGroupName();
 
-// Actualizar FAB según pestaña activa
 document.querySelectorAll('.tab-btn').forEach((btn, i) => {
   btn.addEventListener('click', () => {
-    const fab = document.getElementById('fab');
-    if (i === 2) { // pestaña padres
-      fab.textContent = '+';
-      fab.onclick = () => { document.getElementById('add-parent-form').style.display='block'; document.getElementById('new-parent-name').focus(); };
-    } else {
-      fab.textContent = '+';
-      fab.onclick = openAddModal;
+    if (currentUser && currentUser.role === 'admin') {
+      const fab = document.getElementById('fab');
+      if (i === 2) { // pestaña padres
+        fab.onclick = () => { document.getElementById('add-parent-form').style.display='block'; document.getElementById('new-parent-name').focus(); };
+      } else {
+        fab.onclick = openAddModal;
+      }
     }
   });
 });
