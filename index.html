@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎂 Cumples del Grado</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!-- 🔥 FIREBASE SDKs (versión compat, fácil de usar) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<style>
+  :root {
+    --bg: #F0F8FF;           /* azul muy claro */
+    --card: #FFFFFF;
+    --accent: #1E88E5;       /* azul primario */
+    --accent2: #64B5F6;      /* azul claro */
+    --accent3: #42A5F5;      /* azul medio */
+    --accent4: #1565C0;      /* azul oscuro */
+    --text: #0D2B3E;
+    --muted: #546E7A;
+    --border: #BBDEFB;
+    --shadow: 0 4px 20px rgba(21, 101, 192, 0.15);
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0D47A1 0%, #1976D2 100%);
+    padding: 24px 20px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -30px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 1;
+  }
+  header p {
+    color: rgba(255,255,255,0.85);
+    margin-top: 6px;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 8px;
+    border: none;
+    background: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-btn:hover:not(.active) { background: #f0f7ff; }
+
+  /* MAIN */
+  main { padding: 20px 16px 80px; max-width: 700px; margin: 0 auto; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FORMS */
+  .form-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .form-group {
+    flex: 1;
+    min-width: 140px;
+  }
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+  input[type="text"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    background: #f8fcff;
+    transition: border-color 0.2s;
+    color: var(--text);
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 70px; }
+
+  /* BUTTONS */
+  .btn {
+    padding: 11px 22px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-success { background: var(--accent3); color: white; }
+  .btn-info { background: var(--accent4); color: white; }
+  .btn-warning { background: #FFD966; color: var(--text); }
+  .btn-ghost { background: #E3F2FD; color: var(--accent4); }
+  .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; }
+  .btn-danger { background: #FFE0E0; color: #B71C1C; }
+
+  /* BIRTHDAY CARDS */
+  .bday-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .bday-card:hover { box-shadow: 0 8px 30px rgba(21, 101, 192, 0.2); }
+
+  .bday-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .bday-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .bday-info { flex: 1; }
+  .bday-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+  .bday-date {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .bday-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-upcoming { background: #D4E6FF; color: #0D3B66; }
+  .badge-today { background: #A3D8F0; color: #094183; animation: pulse 1s infinite; }
+  .badge-past { background: #E1F0FA; color: #2C5778; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.6; }
+  }
+
+  .bday-body {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .bday-body.open { display: block; }
+
+  /* RECAUDADOR */
+  .recaudador-section {
+    margin: 14px 0;
+    padding: 12px;
+    background: #E8F1FA;
+    border-radius: 10px;
+    border: 1px dashed var(--accent2);
+  }
+  .recaudador-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .recaudador-name {
+    font-weight: 800;
+    color: var(--text);
+    font-size: 1rem;
+  }
+
+  /* CONTRIBUTORS */
+  .contributors-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 14px 0 8px;
+  }
+  .contributors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+  .contributor-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    user-select: none;
+  }
+  .contributor-item:hover { border-color: var(--accent3); }
+  .contributor-item.checked {
+    border-color: var(--accent3);
+    background: #E3F2FD;
+  }
+  .check-box {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 2px solid #B0C4DE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+  }
+  .contributor-item.checked .check-box {
+    background: var(--accent3);
+    border-color: var(--accent3);
+    color: white;
+  }
+  .contributor-name { font-size: 0.88rem; font-weight: 600; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin: 12px 0; }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--muted);
+  }
+  .progress-bar {
+    height: 8px;
+    background: #CFE2F0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent4));
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+
+  /* NOTES */
+  .note-section { margin-top: 12px; }
+  .note-display {
+    padding: 10px 14px;
+    background: #E1F0FA;
+    border-radius: 8px;
+    border: 1px solid var(--accent2);
+    font-size: 0.9rem;
+    cursor: pointer;
+    min-height: 40px;
+    color: var(--text);
+  }
+  .note-display.empty { color: var(--muted); font-style: italic; }
+
+  /* PARENT LIST */
+  .parent-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    background: white;
+  }
+  .parent-info { display: flex; align-items: center; gap: 10px; }
+  .parent-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+  }
+  .parent-name { font-weight: 700; }
+  .parent-role { font-size: 0.78rem; color: var(--muted); }
+
+  /* STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); font-weight: 700; }
+
+  /* MONTH HEADER */
+  .month-header {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    color: var(--accent4);
+    margin: 20px 0 10px;
+    padding: 6px 14px;
+    background: #D4E6FF;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  /* UPCOMING */
+  .next-badge {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1976D2, #64B5F6);
+    color: white;
+    margin-left: 8px;
+  }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty p { font-size: 0.95rem; }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(30,136,229,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 200;
+  }
+  .fab:hover { transform: scale(1.1); background: #1565C0; }
+  .fab:active { transform: scale(0.95); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,30,60,0.5);
+    z-index: 1000;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px 40px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .modal-actions .btn { flex: 1; justify-content: center; }
+
+  /* RESPONSIVE */
+  @media(max-width: 480px) {
+    header h1 { font-size: 1.6rem; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    .stat-num { font-size: 1.5rem; }
+    .contributors-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎂 Cumples del Grado</h1>
+  <p>Coordinación de regalos del curso</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('inicio')">🏠 Inicio</button>
+  <button class="tab-btn" onclick="showTab('cumples')">🎂 Cumpleaños</button>
+  <button class="tab-btn" onclick="showTab('padres')">👨‍👩‍👧 Padres</button>
+  <button class="tab-btn" onclick="showTab('config')">⚙️ Config</button>
+</div>
+
+<main>
+
+  <!-- TAB: INICIO -->
+  <div id="tab-inicio" class="tab-content active">
+    <div class="stats-grid" id="stats"></div>
+    <div class="section-title">⏰ Próximos cumpleaños</div>
+    <div id="upcoming-list"></div>
+  </div>
+
+  <!-- TAB: CUMPLEAÑOS -->
+  <div id="tab-cumples" class="tab-content">
+    <div class="section-title">🎂 Todos los cumpleaños</div>
+    <div id="bday-list"></div>
+    <div class="empty" id="bday-empty" style="display:none">
+      <div class="empty-icon">🎈</div>
+      <p>No hay cumpleaños aún.<br>¡Agregá alumnos desde el botón +!</p>
+    </div>
+  </div>
+
+  <!-- TAB: PADRES -->
+  <div id="tab-padres" class="tab-content">
+    <div class="section-title">👨‍👩‍👧 Lista de padres / familiares</div>
+    <div id="parents-list"></div>
+    <div class="empty" id="parents-empty" style="display:none">
+      <div class="empty-icon">👥</div>
+      <p>No hay padres aún.<br>Agregalos desde el botón +.</p>
+    </div>
+    <div id="add-parent-form" class="card" style="display:none">
+      <div class="modal-title">➕ Nuevo padre/madre</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="new-parent-name" placeholder="Ej: María García">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Hijo/a (opcional)</label>
+          <input type="text" id="new-parent-child" placeholder="Ej: Lucas">
+        </div>
+        <div class="form-group">
+          <label>Contacto (opcional)</label>
+          <input type="text" id="new-parent-contact" placeholder="WhatsApp o email">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('add-parent-form').style.display='none'">Cancelar</button>
+        <button class="btn btn-success btn-sm" onclick="saveParent()">✓ Guardar</button>
+      </div>
+    </div>
+    <br>
+    <button class="btn btn-info" onclick="document.getElementById('add-parent-form').style.display='block';document.getElementById('new-parent-name').focus()">
+      ➕ Agregar padre/madre
+    </button>
+  </div>
+
+  <!-- TAB: CONFIG -->
+  <div id="tab-config" class="tab-content">
+    <div class="section-title">⚙️ Configuración</div>
+    <div class="card">
+      <div class="recaudador-label">Nombre del grupo / curso</div>
+      <div class="form-row" style="margin-top:8px">
+        <div class="form-group">
+          <input type="text" id="group-name-input" placeholder="Ej: 3° grado B - 2025">
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveGroupName()" style="align-self:flex-end;flex-shrink:0">Guardar</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="recaudador-label" style="margin-bottom:8px">Exportar / Importar datos</div>
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:12px">Guardá una copia de seguridad de todos los datos.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-warning btn-sm" onclick="exportData()">📤 Exportar JSON</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()">📥 Importar</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+      </div>
+    </div>
+    <div class="card">
+      <div class="recaudador-label" style="margin-bottom:8px">Zona de peligro</div>
+      <button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ Borrar todos los datos</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="openAddModal()">+</button>
+
+<!-- MODAL: AGREGAR CUMPLE -->
+<div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">🎂 Agregar cumpleaños</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre del alumno/a</label>
+        <input type="text" id="modal-name" placeholder="Ej: Sofía López">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Fecha de cumpleaños</label>
+        <input type="date" id="modal-date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Recaudador/a (quien junta el dinero)</label>
+        <select id="modal-recaudador">
+          <option value="">— Sin asignar —</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveBirthday()">🎉 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDITAR RECAUDADOR -->
+<div class="modal-overlay" id="rec-modal" onclick="if(event.target===this)closeRecModal()">
+  <div class="modal">
+    <div class="modal-title">📋 Cambiar recaudador/a</div>
+    <div class="form-group">
+      <label>Seleccionar recaudador/a</label>
+      <select id="rec-select">
+        <option value="">— Sin asignar —</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeRecModal()">Cancelar</button>
+      <button class="btn btn-success" onclick="saveRecaudador()">✓ Guardar</button>
+    </div>
+    <input type="hidden" id="rec-bday-id">
+  </div>
+</div>
+
+<!-- MODAL: NOTAS -->
+<div class="modal-overlay" id="note-modal" onclick="if(event.target===this)closeNoteModal()">
+  <div class="modal">
+    <div class="modal-title">📝 Notas</div>
+    <div class="form-group">
+      <textarea id="note-textarea" placeholder="Monto acordado, lugar de entrega, link de transferencia..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeNoteModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNote()">💾 Guardar</button>
+    </div>
+    <input type="hidden" id="note-bday-id">
+  </div>
+</div>
+
+<script>
+// 🔥 CONFIGURACIÓN DE FIREBASE (tus datos)
+const firebaseConfig = {
+  apiKey: "AIzaSyCMK5io8l1BItL_xdKfTnADJoAw8A1CBwU",
+  authDomain: "cumples-escolares.firebaseapp.com",
+  projectId: "cumples-escolares",
+  storageBucket: "cumples-escolares.firebasestorage.app",
+  messagingSenderId: "1097916597306",
+  appId: "1:1097916597306:web:c0017dbfacc7669010e103"
+};
+
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Variables globales (se actualizan en tiempo real)
+let parents = [];
+let birthdays = [];
+const COLORS = ['#1E88E5','#42A5F5','#1976D2','#0D47A1','#64B5F6','#1565C0','#82B1FF','#2962FF'];
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// Utilidades
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); } // ya no se usa para Firestore, pero la dejamos por si acaso
+function colorFor(name) {
+  let h = 0;
+  for(let c of name) h = (h*31 + c.charCodeAt(0)) & 0xFFFFFF;
+  return COLORS[Math.abs(h) % COLORS.length];
+}
+function initials(name) {
+  return name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
+}
+
+// ─── TABS ────────────────────────────────────────────────
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+  render(); // Renderiza con los datos actuales
+}
+
+// ─── DATES ───────────────────────────────────────────────
+function parseDate(str) {
+  const [y,m,d] = str.split('-').map(Number);
+  return { year: y, month: m, day: d };
+}
+function getDaysUntil(dateStr) {
+  const today = new Date();
+  const { month, day } = parseDate(dateStr);
+  let next = new Date(today.getFullYear(), month-1, day);
+  if (next < today && !(next.getMonth() === today.getMonth() && next.getDate() === today.getDate())) {
+    next = new Date(today.getFullYear()+1, month-1, day);
+  }
+  const diff = Math.floor((next - today) / 86400000);
+  return diff;
+}
+function formatDate(dateStr) {
+  const { year, month, day } = parseDate(dateStr);
+  return `${day} de ${MONTHS[month-1]}`;
+}
+function getBadge(dateStr) {
+  const days = getDaysUntil(dateStr);
+  if (days === 0) return { text: '🎉 ¡HOY!', cls: 'badge-today' };
+  if (days <= 7) return { text: `En ${days} días`, cls: 'badge-upcoming' };
+  if (days <= 30) return { text: `En ${days} días`, cls: 'badge-upcoming' };
+  return { text: formatDate(dateStr), cls: 'badge-past' };
+}
+
+// ─── LISTENERS EN TIEMPO REAL ────────────────────────────
+function listenToParents() {
+  db.collection("parents").onSnapshot((snapshot) => {
+    parents = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    render(); // Actualiza toda la interfaz
+  }, (error) => {
+    console.error("Error al escuchar padres: ", error);
+  });
+}
+
+function listenToBirthdays() {
+  db.collection("birthdays").onSnapshot((snapshot) => {
+    birthdays = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    render();
+  }, (error) => {
+    console.error("Error al escuchar cumpleaños: ", error);
+  });
+}
+
+// ─── RENDER ──────────────────────────────────────────────
+function render() {
+  renderStats();
+  renderUpcoming();
+  renderBirthdays();
+  renderParents();
+  populateSelects();
+}
+
+function renderStats() {
+  const total = birthdays.length;
+  const upcoming = birthdays.filter(b => { const d = getDaysUntil(b.date); return d > 0 && d <= 30; }).length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Cumpleaños</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--accent3)">${upcoming}</div><div class="stat-label">Este mes</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--accent4)">${parents.length}</div><div class="stat-label">Padres</div></div>
+  `;
+}
+
+function renderUpcoming() {
+  const sorted = [...birthdays]
+    .map(b => ({ ...b, days: getDaysUntil(b.date) }))
+    .sort((a,b) => a.days - b.days)
+    .slice(0, 5);
+
+  if (!sorted.length) {
+    document.getElementById('upcoming-list').innerHTML = `<div class="empty"><div class="empty-icon">📅</div><p>Agregá cumpleaños desde la pestaña 🎂</p></div>`;
+    return;
+  }
+
+  document.getElementById('upcoming-list').innerHTML = sorted.map(b => {
+    const badge = getBadge(b.date);
+    const recName = b.recaudador ? (parents.find(p=>p.id===b.recaudador)?.name || '—') : 'Sin asignar';
+    const total = parents.length;
+    const checked = (b.contributors || []).length;
+    return `<div class="bday-card" onclick="showTab_cumples(); setTimeout(()=>toggleBody('${b.id}'),100)">
+      <div class="bday-header" style="border-left:4px solid ${colorFor(b.name)}">
+        <div class="bday-avatar" style="background:${colorFor(b.name)}20;color:${colorFor(b.name)}">${initials(b.name)}</div>
+        <div class="bday-info">
+          <div class="bday-name">${b.name} ${b.days === 0 ? '<span class="next-badge">¡HOY!</span>' : b.days <= 7 ? '<span class="next-badge">¡Pronto!</span>' : ''}</div>
+          <div class="bday-date">${formatDate(b.date)} · 🙋 ${recName} · ✅ ${checked}/${total}</div>
+        </div>
+        <span class="bday-badge ${badge.cls}">${badge.text}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showTab_cumples() {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-cumples').classList.add('active');
+  document.querySelectorAll('.tab-btn')[1].classList.add('active');
+  renderBirthdays();
+}
+
+function renderBirthdays() {
+  const list = document.getElementById('bday-list');
+  const empty = document.getElementById('bday-empty');
+
+  if (!birthdays.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const sorted = [...birthdays]
+    .map(b => ({ ...b, days: getDaysUntil(b.date) }))
+    .sort((a,b) => a.days - b.days);
+
+  const byMonth = {};
+  sorted.forEach(b => {
+    const { month } = parseDate(b.date);
+    if (!byMonth[month]) byMonth[month] = [];
+    byMonth[month].push(b);
+  });
+
+  let html = '';
+  for (const month of Object.keys(byMonth).sort((a,b)=>a-b)) {
+    html += `<div class="month-header">📅 ${MONTHS[month-1]}</div>`;
+    byMonth[month].forEach(b => {
+      html += renderBdayCard(b);
+    });
+  }
+  list.innerHTML = html;
+}
+
+function renderBdayCard(b) {
+  const badge = getBadge(b.date);
+  const rec = b.recaudador ? parents.find(p=>p.id===b.recaudador) : null;
+  const contributors = b.contributors || [];
+  const total = parents.length;
+  const pct = total > 0 ? Math.round(contributors.length / total * 100) : 0;
+
+  const contributorsHTML = parents.length ? parents.map(p => {
+    const checked = contributors.includes(p.id);
+    return `<div class="contributor-item ${checked?'checked':''}" onclick="toggleContributor('${b.id}','${p.id}')">
+      <div class="check-box">${checked?'✓':''}</div>
+      <span class="contributor-name">${p.name}</span>
+    </div>`;
+  }).join('') : `<p style="color:var(--muted);font-size:0.85rem">Primero agregá padres en la pestaña 👨‍👩‍👧</p>`;
+
+  const noteText = b.note || '';
+
+  return `<div class="bday-card" id="bday-${b.id}">
+    <div class="bday-header" onclick="toggleBody('${b.id}')" style="border-left:4px solid ${colorFor(b.name)}">
+      <div class="bday-avatar" style="background:${colorFor(b.name)}20;color:${colorFor(b.name)}">${initials(b.name)}</div>
+      <div class="bday-info">
+        <div class="bday-name">${b.name}</div>
+        <div class="bday-date">${formatDate(b.date)}</div>
+      </div>
+      <span class="bday-badge ${badge.cls}">${badge.text}</span>
+    </div>
+    <div class="bday-body" id="body-${b.id}">
+      <div class="recaudador-section">
+        <div class="recaudador-label">🙋 Recaudador/a</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <div class="recaudador-name">${rec ? rec.name : '⚠️ Sin asignar'}</div>
+          <button class="btn btn-warning btn-sm" onclick="openRecModal('${b.id}')">Cambiar</button>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span>✅ Aportaron: ${contributors.length}/${total}</span>
+          <span>${pct}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+
+      <div class="contributors-title">👥 ¿Quién aportó?</div>
+      <div class="contributors-grid">${contributorsHTML}</div>
+
+      <div class="note-section">
+        <div class="contributors-title">📝 Notas</div>
+        <div class="note-display ${noteText?'':'empty'}" onclick="openNoteModal('${b.id}')">${noteText || 'Tap para agregar monto, link de pago, etc...'}</div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="shareStatus('${b.id}')">📋 Copiar estado</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteBirthday('${b.id}')">🗑️ Eliminar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleBody(id) {
+  const body = document.getElementById('body-'+id);
+  body.classList.toggle('open');
+}
+
+function renderParents() {
+  const list = document.getElementById('parents-list');
+  const empty = document.getElementById('parents-empty');
+  if (!parents.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = parents.map(p => `
+    <div class="parent-item">
+      <div class="parent-info">
+        <div class="parent-avatar" style="background:${colorFor(p.name)}">${initials(p.name)}</div>
+        <div>
+          <div class="parent-name">${p.name}</div>
+          <div class="parent-role">${p.childName ? '👦 '+p.childName : ''} ${p.contact ? '· '+p.contact : ''}</div>
+        </div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteParent('${p.id}')">✕</button>
+    </div>
+  `).join('');
+}
+
+function populateSelects() {
+  const opts = `<option value="">— Sin asignar —</option>` +
+    parents.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  document.getElementById('modal-recaudador').innerHTML = opts;
+  document.getElementById('rec-select').innerHTML = opts;
+}
+
+// ─── ACCIONES SOBRE FIREBASE ─────────────────────────────
+function openAddModal() {
+  document.getElementById('modal-name').value = '';
+  document.getElementById('modal-date').value = '';
+  populateSelects();
+  document.getElementById('add-modal').classList.add('open');
+  setTimeout(() => document.getElementById('modal-name').focus(), 100);
+}
+function closeModal() { document.getElementById('add-modal').classList.remove('open'); }
+
+function saveBirthday() {
+  const name = document.getElementById('modal-name').value.trim();
+  const date = document.getElementById('modal-date').value;
+  const recaudadorId = document.getElementById('modal-recaudador').value;
+
+  if (!name || !date) { alert('Por favor completá el nombre y la fecha.'); return; }
+
+  db.collection("birthdays").add({
+    name: name,
+    date: date,
+    recaudador: recaudadorId || '',
+    contributors: [],
+    note: ''
+  }).then(() => {
+    closeModal();
+  }).catch((error) => {
+    alert('Error al guardar: ' + error.message);
+  });
+}
+
+function deleteBirthday(id) {
+  if (!confirm('¿Eliminar este cumpleaños?')) return;
+  db.collection("birthdays").doc(id).delete().catch(error => alert('Error: ' + error.message));
+}
+
+function saveParent() {
+  const name = document.getElementById('new-parent-name').value.trim();
+  if (!name) { alert('Ingresá el nombre.'); return; }
+  const childName = document.getElementById('new-parent-child').value.trim();
+  const contact = document.getElementById('new-parent-contact').value.trim();
+
+  db.collection("parents").add({
+    name: name,
+    childName: childName || '',
+    contact: contact || ''
+  }).then(() => {
+    document.getElementById('new-parent-name').value = '';
+    document.getElementById('new-parent-child').value = '';
+    document.getElementById('new-parent-contact').value = '';
+    document.getElementById('add-parent-form').style.display = 'none';
+  }).catch((error) => {
+    alert('Error al guardar: ' + error.message);
+  });
+}
+
+function deleteParent(id) {
+  if (!confirm('¿Eliminar este padre/madre?')) return;
+  db.collection("parents").doc(id).delete().catch(error => alert('Error: ' + error.message));
+}
+
+function toggleContributor(bdayId, parentId) {
+  const bday = birthdays.find(b => b.id === bdayId);
+  if (!bday) return;
+  const contributors = bday.contributors || [];
+  const newContributors = contributors.includes(parentId)
+    ? contributors.filter(id => id !== parentId)
+    : [...contributors, parentId];
+
+  db.collection("birthdays").doc(bdayId).update({
+    contributors: newContributors
+  }).catch(error => alert('Error: ' + error.message));
+}
+
+// Recaudador modal
+let _recBdayId = null;
+function openRecModal(bdayId) {
+  _recBdayId = bdayId;
+  populateSelects();
+  const b = birthdays.find(b=>b.id===bdayId);
+  document.getElementById('rec-select').value = b?.recaudador || '';
+  document.getElementById('rec-modal').classList.add('open');
+}
+function closeRecModal() { document.getElementById('rec-modal').classList.remove('open'); }
+function saveRecaudador() {
+  const bdayId = _recBdayId;
+  const recaudadorId = document.getElementById('rec-select').value;
+  db.collection("birthdays").doc(bdayId).update({
+    recaudador: recaudadorId
+  }).then(() => {
+    closeRecModal();
+  }).catch(error => alert('Error: ' + error.message));
+}
+
+// Note modal
+let _noteBdayId = null;
+function openNoteModal(bdayId) {
+  _noteBdayId = bdayId;
+  const b = birthdays.find(b=>b.id===bdayId);
+  document.getElementById('note-textarea').value = b?.note || '';
+  document.getElementById('note-modal').classList.add('open');
+}
+function closeNoteModal() { document.getElementById('note-modal').classList.remove('open'); }
+function saveNote() {
+  const bdayId = _noteBdayId;
+  const noteText = document.getElementById('note-textarea').value.trim();
+  db.collection("birthdays").doc(bdayId).update({
+    note: noteText
+  }).then(() => {
+    closeNoteModal();
+  }).catch(error => alert('Error: ' + error.message));
+}
+
+// Share status (solo copia texto local, no necesita Firebase)
+function shareStatus(bdayId) {
+  const b = birthdays.find(b=>b.id===bdayId);
+  if (!b) return;
+  const rec = b.recaudador ? (parents.find(p=>p.id===b.recaudador)?.name || '—') : 'Sin asignar';
+  const checked = (b.contributors||[]).map(id => parents.find(p=>p.id===id)?.name || '').filter(Boolean);
+  const unchecked = parents.filter(p=>!(b.contributors||[]).includes(p.id)).map(p=>p.name);
+  let txt = `🎂 Cumpleaños de *${b.name}* (${formatDate(b.date)})\n`;
+  txt += `🙋 Recaudador/a: *${rec}*\n\n`;
+  txt += `✅ Aportaron (${checked.length}):\n${checked.map(n=>'  ✓ '+n).join('\n') || '  —'}\n\n`;
+  txt += `⏳ Pendientes (${unchecked.length}):\n${unchecked.map(n=>'  · '+n).join('\n') || '  —'}`;
+  if (b.note) txt += `\n\n📝 ${b.note}`;
+  navigator.clipboard.writeText(txt).then(()=>alert('¡Copiado! Podés pegarlo en WhatsApp 📋')).catch(()=>prompt('Copia este texto:', txt));
+}
+
+// Config (se mantiene en localStorage porque es local)
+function updateGroupName() {
+  const input = document.getElementById('group-name-input');
+  if (input) input.value = localStorage.getItem('groupName') || 'Mi Grupo Escolar';
+  document.title = '🎂 ' + (localStorage.getItem('groupName') || 'Cumples del Grado');
+}
+function saveGroupName() {
+  const name = document.getElementById('group-name-input').value.trim() || 'Mi Grupo';
+  localStorage.setItem('groupName', name);
+  updateGroupName();
+  alert('¡Guardado!');
+}
+
+// Exportar/Importar (desde localStorage, pero podemos exportar también Firebase)
+function exportData() {
+  // Exporta solo la configuración local y los nombres (opcional)
+  const localData = {
+    groupName: localStorage.getItem('groupName') || 'Mi Grupo Escolar'
+  };
+  const blob = new Blob([JSON.stringify(localData, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cumples-config.json';
+  a.click();
+}
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const localData = JSON.parse(e.target.result);
+      if (localData.groupName) {
+        localStorage.setItem('groupName', localData.groupName);
+        updateGroupName();
+      }
+      alert('Configuración importada. Los cumpleaños y padres están en la nube.');
+    } catch(err) { alert('Error al leer el archivo.'); }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+function clearAllData() {
+  if (!confirm('⚠️ ¿Borrar TODOS los datos de la nube? Esta acción no se puede deshacer.')) return;
+  // Borra todas las colecciones (riesgoso, mejor deshabilitar o usar con cuidado)
+  // Por seguridad, solo limpiamos los padres y cumpleaños uno por uno (lento pero seguro)
+  Promise.all([
+    ...parents.map(p => db.collection("parents").doc(p.id).delete()),
+    ...birthdays.map(b => db.collection("birthdays").doc(b.id).delete())
+  ]).then(() => {
+    alert('Datos eliminados.');
+  }).catch(error => alert('Error: ' + error.message));
+}
+
+// ─── INICIALIZACIÓN ─────────────────────────────────────
+// Escuchar cambios en tiempo real
+listenToParents();
+listenToBirthdays();
+updateGroupName();
+
+// Actualizar FAB según pestaña activa
+document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+  btn.addEventListener('click', () => {
+    const fab = document.getElementById('fab');
+    if (i === 2) { // pestaña padres
+      fab.textContent = '+';
+      fab.onclick = () => { document.getElementById('add-parent-form').style.display='block'; document.getElementById('new-parent-name').focus(); };
+    } else {
+      fab.textContent = '+';
+      fab.onclick = openAddModal;
+    }
+  });
+});
+</script>
+</body>
+</html>
