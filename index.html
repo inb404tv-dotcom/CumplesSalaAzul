@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
 
 <style>
-  /* ===== ESTILOS COMPLETOS (sin cambios) ===== */
+  /* ===== ESTILOS COMPLETOS ===== */
   :root {
     --bg: #F0F8FF;
     --card: #FFFFFF;
@@ -1292,14 +1292,14 @@ function renderBdayCard(b) {
     const isSelf = currentUser && p.id === currentUser.id;
     const canToggle = currentUser.role === 'admin' || (isSelf && !checked);
     const disabledClass = (!canToggle && checked) ? 'disabled' : '';
-    return `<div class="contributor-item ${checked?'checked':''} ${disabledClass}" onclick="if(${canToggle}) toggleContributor('${b.id}','${p.id}')">
+    return `<div class="contributor-item ${checked?'checked':''} ${disabledClass}" onclick="event.stopPropagation(); if(${canToggle}) toggleContributor('${b.id}','${p.id}')">
       <div class="check-box">${checked?'✓':''}</div>
       <span class="contributor-name">${p.name}</span>
     </div>`;
   }).join('') : `<p style="color:var(--muted);font-size:0.85rem">Primero agregá padres en la pestaña 👨‍👩‍👧</p>`;
 
   const noteText = b.note || '';
-  const deleteButton = currentUser.role === 'admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteBirthday('${b.id}')">🗑️ Eliminar</button>` : '';
+  const deleteButton = currentUser.role === 'admin' ? `<button class="btn btn-danger btn-sm" onclick="event.stopPropagation(); deleteBirthday('${b.id}')">🗑️ Eliminar</button>` : '';
 
   const allFiles = birthdayFiles[b.id] || [];
   let visibleFiles = [];
@@ -1313,7 +1313,7 @@ function renderBdayCard(b) {
     const fileType = f.fileType || '';
     const isImage = fileType.startsWith('image/');
     const thumb = isImage ? `<img src="${f.url}" class="file-thumb" alt="thumb">` : '<span class="file-icon">📄</span>';
-    return `<div class="file-item" onclick="viewFile('${f.url}', '${fileType}')">
+    return `<div class="file-item" onclick="event.stopPropagation(); viewFile('${f.url}', '${fileType}')">
       <div class="file-info">
         ${thumb}
         <span class="file-name">${f.fileName}</span>
@@ -1337,7 +1337,7 @@ function renderBdayCard(b) {
         <div class="recaudador-label">🙋 Recaudador/a</div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
           <div class="recaudador-name">${rec ? rec.name : '⚠️ Sin asignar'}</div>
-          ${currentUser.role === 'admin' ? `<button class="btn btn-warning btn-sm" onclick="openRecModal('${b.id}')">Cambiar</button>` : ''}
+          ${currentUser.role === 'admin' ? `<button class="btn btn-warning btn-sm" onclick="event.stopPropagation(); openRecModal('${b.id}')">Cambiar</button>` : ''}
         </div>
       </div>
 
@@ -1354,13 +1354,13 @@ function renderBdayCard(b) {
 
       <div class="note-section">
         <div class="contributors-title">📝 Notas</div>
-        <div class="note-display ${noteText?'':'empty'}" onclick="openNoteModal('${b.id}')">${noteText || 'Tap para agregar monto, link de pago, etc...'}</div>
+        <div class="note-display ${noteText?'':'empty'}" onclick="event.stopPropagation(); openNoteModal('${b.id}')">${noteText || 'Tap para agregar monto, link de pago, etc...'}</div>
       </div>
 
       <div class="files-section">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div class="contributors-title">📎 Archivos adjuntos</div>
-          <button class="btn btn-info btn-sm" onclick="openUploadModal('${b.id}')">➕ Subir archivo</button>
+          <button class="btn btn-info btn-sm" onclick="event.stopPropagation(); openUploadModal('${b.id}')">➕ Subir archivo</button>
         </div>
         <div class="files-list" id="files-${b.id}">
           ${filesHTML || '<p style="color:var(--muted);">No hay archivos visibles</p>'}
@@ -1368,7 +1368,7 @@ function renderBdayCard(b) {
       </div>
 
       <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
-        <button class="btn btn-ghost btn-sm" onclick="shareStatus('${b.id}')">📋 Copiar estado</button>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); shareStatus('${b.id}')">📋 Copiar estado</button>
         ${deleteButton}
       </div>
     </div>
