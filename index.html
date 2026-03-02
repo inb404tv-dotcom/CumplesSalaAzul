@@ -964,6 +964,7 @@ let parents = [];
 let birthdays = [];
 let birthdayFiles = {}; // { bdayId: [archivos] }
 let currentUser = null; // { id, name, email, role, childName }
+let openBirthdayIds = new Set(); // IDs de cumpleaños desplegados
 
 // Referencias a los listeners
 let unsubscribeParents = null;
@@ -1153,6 +1154,7 @@ function logout() {
     parents = [];
     birthdays = [];
     birthdayFiles = {};
+    openBirthdayIds.clear(); // Limpiar desplegables
     document.getElementById('login-container').style.display = 'block';
     document.getElementById('app-container').style.display = 'none';
     document.getElementById('login-email').value = '';
@@ -1323,6 +1325,9 @@ function renderBdayCard(b) {
     </div>`;
   }).join('');
 
+  // Determinar si el cuerpo debe estar abierto
+  const bodyClass = openBirthdayIds.has(b.id) ? 'bday-body open' : 'bday-body';
+
   return `<div class="bday-card" id="bday-${b.id}">
     <div class="bday-header" onclick="toggleBody('${b.id}')" style="border-left:4px solid ${colorFor(b.name)}">
       <div class="bday-avatar" style="background:${colorFor(b.name)}20;color:${colorFor(b.name)}">${initials(b.name)}</div>
@@ -1332,7 +1337,7 @@ function renderBdayCard(b) {
       </div>
       <span class="bday-badge ${badge.cls}">${badge.text}</span>
     </div>
-    <div class="bday-body" id="body-${b.id}">
+    <div class="${bodyClass}" id="body-${b.id}">
       <div class="recaudador-section">
         <div class="recaudador-label">🙋 Recaudador/a</div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
@@ -1377,7 +1382,14 @@ function renderBdayCard(b) {
 
 function toggleBody(id) {
   const body = document.getElementById('body-'+id);
-  body.classList.toggle('open');
+  if (body) {
+    body.classList.toggle('open');
+    if (body.classList.contains('open')) {
+      openBirthdayIds.add(id);
+    } else {
+      openBirthdayIds.delete(id);
+    }
+  }
 }
 
 function renderParents() {
@@ -1495,7 +1507,10 @@ function deleteBirthday(id) {
   if (!confirm('¿Eliminar este cumpleaños?')) return;
   const b = birthdays.find(b => b.id === id);
   db.collection("birthdays").doc(id).delete()
-    .then(() => logAudit('eliminar cumpleaños', { nombre: b?.name, id }))
+    .then(() => {
+      openBirthdayIds.delete(id); // Eliminar del set de abiertos
+      logAudit('eliminar cumpleaños', { nombre: b?.name, id });
+    })
     .catch(error => alert('Error: ' + error.message));
 }
 
