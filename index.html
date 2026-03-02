@@ -6,13 +6,14 @@
 <title>🎂 Cumples del Grado</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<!-- 🔥 Firebase SDKs (todos necesarios) -->
+<!-- 🔥 Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
 
 <style>
-  /* (mantén todos los estilos anteriores, iguales) */
+  /* (Mantén todos los estilos igual que en la versión anterior) */
   :root {
     --bg: #F0F8FF;
     --card: #FFFFFF;
@@ -508,8 +509,6 @@
     box-shadow: var(--shadow);
   }
   .logout-btn:hover { background: #FFC0C0; }
-
-  /* Estilos para archivos */
   .files-section {
     margin-top: 16px;
     padding: 12px;
@@ -555,8 +554,6 @@
     width: 0%;
     transition: width 0.2s;
   }
-
-  /* Auditoría */
   .audit-item {
     padding: 12px;
     border-bottom: 1px solid var(--border);
@@ -565,7 +562,6 @@
   .audit-user { font-weight: 700; color: var(--accent4); }
   .audit-action { font-weight: 600; }
   .audit-time { color: var(--muted); font-size: 0.75rem; }
-
   @media(max-width: 480px) {
     header h1 { font-size: 1.6rem; }
     .stats-grid { grid-template-columns: repeat(3, 1fr); }
@@ -898,12 +894,17 @@ const firebaseConfig = {
   apiKey: "AIzaSyCMK5io8l1BItL_xdKfTnADJoAw8A1CBwU",
   authDomain: "cumples-escolares.firebaseapp.com",
   projectId: "cumples-escolares",
-  storageBucket: "cumples-escolares.firebasestorage.app", // Ojo: .app o .com?
+  storageBucket: "cumples-escolares.firebasestorage.app",
   messagingSenderId: "1097916597306",
   appId: "1:1097916597306:web:c0017dbfacc7669010e103"
 };
 
 firebase.initializeApp(firebaseConfig);
+
+// 🔥 App Check con reCAPTCHA v3 (clave proporcionada)
+const appCheck = firebase.appCheck();
+appCheck.activate('6LeKT30sAAAAAIDMbwRGcxRD0_jIqmxGG9q30gDY', true);
+
 const db = firebase.firestore();
 const storage = firebase.storage();
 
@@ -996,11 +997,10 @@ function listenToParents() {
     if (currentUser) {
       const updated = parents.find(p => p.id === currentUser.id);
       if (updated) currentUser = updated;
-      else logout();
+      else logout(); // El usuario ya no existe
     }
     render();
     updateLoginSelect();
-    ensureAdminExists();
   }, (error) => console.error("Error al escuchar padres: ", error));
 }
 
@@ -1012,7 +1012,6 @@ function listenToBirthdays() {
 }
 
 function listenToFiles() {
-  // Escuchar todos los archivos de la colección birthday_files
   db.collection("birthday_files").onSnapshot((snapshot) => {
     birthdayFiles = {};
     snapshot.docs.forEach(doc => {
@@ -1021,7 +1020,7 @@ function listenToFiles() {
       if (!birthdayFiles[bdayId]) birthdayFiles[bdayId] = [];
       birthdayFiles[bdayId].push(file);
     });
-    render(); // para actualizar las vistas de archivos
+    render();
   }, (error) => console.error("Error al escuchar archivos:", error));
 }
 
@@ -1048,9 +1047,9 @@ function login() {
   } else {
     document.getElementById('config-tab').classList.remove('hidden');
     document.getElementById('fab').classList.remove('hidden');
-    loadAuditLogs(); // precargar auditoría
+    loadAuditLogs();
   }
-  logLogin(); // registrar login
+  logLogin();
   render();
 }
 
@@ -1166,7 +1165,6 @@ function renderBdayCard(b) {
   const noteText = b.note || '';
   const deleteButton = currentUser.role === 'admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteBirthday('${b.id}')">🗑️ Eliminar</button>` : '';
 
-  // Archivos asociados
   const files = birthdayFiles[b.id] || [];
   const filesHTML = files.map(f => `
     <div class="file-item">
@@ -1464,7 +1462,6 @@ async function uploadFile() {
   const fileInput = document.getElementById('file-input');
   if (!fileInput.files.length) { alert('Seleccioná un archivo'); return; }
   const file = fileInput.files[0];
-  // Validar tipo (imagen o PDF)
   if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
     alert('Solo se permiten imágenes o PDF');
     return;
@@ -1474,7 +1471,6 @@ async function uploadFile() {
   const storageRef = storage.ref(`cumples/${bdayId}/${fileName}`);
   const uploadTask = storageRef.put(file);
 
-  // Mostrar progreso
   const progressContainer = document.getElementById('upload-progress-container');
   const progressBar = document.getElementById('upload-progress-bar');
   progressContainer.style.display = 'block';
@@ -1490,9 +1486,7 @@ async function uploadFile() {
       progressContainer.style.display = 'none';
     },
     async () => {
-      // Subida completa
       const url = await uploadTask.snapshot.ref.getDownloadURL();
-      // Guardar referencia en Firestore
       try {
         await db.collection('birthday_files').add({
           birthdayId: bdayId,
@@ -1520,14 +1514,11 @@ async function deleteFile(fileId, bdayId) {
   if (currentUser.role !== 'admin') return;
   if (!confirm('¿Eliminar este archivo?')) return;
   try {
-    // Obtener la referencia del archivo
     const fileDoc = await db.collection('birthday_files').doc(fileId).get();
     if (fileDoc.exists) {
       const fileData = fileDoc.data();
-      // Eliminar de Storage
       const fileRef = storage.refFromURL(fileData.url);
       await fileRef.delete();
-      // Eliminar de Firestore
       await db.collection('birthday_files').doc(fileId).delete();
       await logAudit('eliminar archivo', { archivo: fileData.fileName });
     }
@@ -1663,22 +1654,6 @@ function deleteUserFromEdit() {
       closeEditUserModal();
     })
     .catch(error => alert('Error: ' + error.message));
-}
-
-// ─── ADMIN AUTOMÁTICO ────────────────────────────────────
-function ensureAdminExists() {
-  const adminExists = parents.some(p => p.role === 'admin');
-  if (!adminExists && parents.length === 0) {
-    db.collection("parents").add({
-      name: "Felipe T.",
-      password: "221089",
-      role: "admin",
-      childName: "",
-      contact: ""
-    }).then(() => {
-      console.log('Admin creado automáticamente');
-    }).catch(error => console.error('Error al crear admin:', error));
-  }
 }
 
 // ─── TABS ────────────────────────────────────────────────
