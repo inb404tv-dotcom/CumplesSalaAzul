@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎂 Cumples Salita Azul Belgrano</title>
+<title>🎂 Cumples del Grado</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <!-- 🔥 Firebase SDKs -->
@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
 
 <style>
-  /* ===== ESTILOS (mismos que antes, con paleta azul) ===== */
+  /* ===== ESTILOS ===== */
   :root {
     --bg: #F0F8FF;
     --card: #FFFFFF;
@@ -128,6 +128,7 @@
   }
   .tab-btn:hover:not(.active) { background: #f0f7ff; }
   .tab-btn.hidden { display: none; }
+  .hidden { display: none !important; }
   main { padding: 20px 16px 80px; max-width: 700px; margin: 0 auto; }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
@@ -624,7 +625,7 @@
 <!-- APP CONTAINER (visible solo cuando hay sesión) -->
 <div id="app-container" style="display:none;">
   <header>
-    <h1>🎂 Cumples Salita Azul Belgrano</h1>
+    <h1>🎂 Cumples del Grado</h1>
     <p>Coordinación de regalos del curso</p>
   </header>
 
@@ -665,7 +666,7 @@
         <div class="modal-title">➕ Nuevo padre/madre</div>
         <div class="form-row">
           <div class="form-group">
-            <label>Nombre del Niñ@</label>
+            <label>Nombre del Padre/Madre</label>
             <input type="text" id="new-parent-name" placeholder="Ej: María García">
           </div>
         </div>
@@ -681,7 +682,7 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Nombre del Padre/Madre</label>
+            <label>Nombre del Niñ@</label>
             <input type="text" id="new-parent-child" placeholder="Ej: Lucas">
           </div>
         </div>
@@ -700,7 +701,7 @@
         </div>
       </div>
       <br>
-      <!-- Botón solo visible para admin (se controla con clase hidden en JS) -->
+      <!-- Botón solo visible para admin (se controla con clase hidden) -->
       <button class="btn btn-info" id="add-parent-btn" onclick="document.getElementById('add-parent-form').style.display='block';document.getElementById('new-parent-name').focus()">
         ➕ Agregar padre/madre
       </button>
@@ -824,7 +825,7 @@
     <div class="modal-title">➕ Nuevo usuario</div>
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del Niñ@/e</label>
+        <label>Nombre del Padre/Madre</label>
         <input type="text" id="new-user-name" placeholder="Ej: Ana Pérez">
       </div>
     </div>
@@ -840,7 +841,7 @@
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del Padre/Madre</label>
+        <label>Nombre del Niñ@</label>
         <input type="text" id="new-user-child" placeholder="Ej: Martina">
       </div>
     </div>
@@ -867,7 +868,7 @@
     <input type="hidden" id="edit-user-id">
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del Niñ@</label>
+        <label>Nombre del Padre/Madre</label>
         <input type="text" id="edit-user-name">
       </div>
     </div>
@@ -883,7 +884,7 @@
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del Padre/Madre</label>
+        <label>Nombre del Niñ@</label>
         <input type="text" id="edit-user-child">
       </div>
     </div>
@@ -947,7 +948,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// 🔥 App Check (comentar si da problemas)
+// 🔥 App Check (opcional, comentar si da problemas)
 const appCheck = firebase.appCheck();
 appCheck.activate(
   '6LeKT30sAAAAAIDMbwRGcxRD0_jIqmxGG9q30gDY', // tu clave de sitio
@@ -963,6 +964,11 @@ let parents = [];
 let birthdays = [];
 let birthdayFiles = {}; // { bdayId: [archivos] }
 let currentUser = null; // { id, name, email, role, childName }
+
+// Funciones para desuscribir listeners
+let unsubscribeParents = null;
+let unsubscribeBirthdays = null;
+let unsubscribeFiles = null;
 
 const COLORS = ['#1E88E5','#42A5F5','#1976D2','#0D47A1','#64B5F6','#1565C0','#82B1FF','#2962FF'];
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -1039,9 +1045,15 @@ async function loadAuditLogs() {
   }
 }
 
-// ─── LISTENERS EN TIEMPO REAL ────────────────────────────
-function listenToParents() {
-  db.collection("parents").onSnapshot((snapshot) => {
+// ─── LISTENERS EN TIEMPO REAL (solo se activan con usuario logueado) ──
+function startListeners() {
+  if (!currentUser) return;
+  // Detener listeners previos si existen
+  if (unsubscribeParents) unsubscribeParents();
+  if (unsubscribeBirthdays) unsubscribeBirthdays();
+  if (unsubscribeFiles) unsubscribeFiles();
+
+  unsubscribeParents = db.collection("parents").onSnapshot((snapshot) => {
     parents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     if (currentUser) {
       const updated = parents.find(p => p.id === currentUser.id);
@@ -1049,17 +1061,13 @@ function listenToParents() {
     }
     render();
   }, (error) => console.error("Error al escuchar padres: ", error));
-}
 
-function listenToBirthdays() {
-  db.collection("birthdays").onSnapshot((snapshot) => {
+  unsubscribeBirthdays = db.collection("birthdays").onSnapshot((snapshot) => {
     birthdays = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     render();
   }, (error) => console.error("Error al escuchar cumpleaños: ", error));
-}
 
-function listenToFiles() {
-  db.collection("birthday_files").onSnapshot((snapshot) => {
+  unsubscribeFiles = db.collection("birthday_files").onSnapshot((snapshot) => {
     birthdayFiles = {};
     snapshot.docs.forEach(doc => {
       const file = { id: doc.id, ...doc.data() };
@@ -1069,6 +1077,12 @@ function listenToFiles() {
     });
     render();
   }, (error) => console.error("Error al escuchar archivos:", error));
+}
+
+function stopListeners() {
+  if (unsubscribeParents) { unsubscribeParents(); unsubscribeParents = null; }
+  if (unsubscribeBirthdays) { unsubscribeBirthdays(); unsubscribeBirthdays = null; }
+  if (unsubscribeFiles) { unsubscribeFiles(); unsubscribeFiles = null; }
 }
 
 // ─── LOGIN ───────────────────────────────────────────────
@@ -1097,7 +1111,7 @@ async function login() {
     if (currentUser.role !== 'admin') {
       document.getElementById('config-tab').classList.add('hidden');
       document.getElementById('fab').classList.add('hidden');
-      document.getElementById('add-parent-btn').classList.add('hidden'); // Ocultar botón de agregar padre
+      document.getElementById('add-parent-btn').classList.add('hidden');
     } else {
       document.getElementById('config-tab').classList.remove('hidden');
       document.getElementById('fab').classList.remove('hidden');
@@ -1105,6 +1119,8 @@ async function login() {
       loadAuditLogs();
     }
 
+    // Iniciar listeners después de login exitoso
+    startListeners();
     logLogin();
     render();
   } catch (error) {
@@ -1114,14 +1130,55 @@ async function login() {
 }
 
 function logout() {
+  stopListeners();
   auth.signOut().then(() => {
     currentUser = null;
+    parents = [];
+    birthdays = [];
+    birthdayFiles = {};
     document.getElementById('login-container').style.display = 'block';
     document.getElementById('app-container').style.display = 'none';
     document.getElementById('login-email').value = '';
     document.getElementById('login-password').value = '';
   }).catch(console.error);
 }
+
+// Restaurar sesión al recargar la página
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    // Hay un usuario autenticado, buscar su documento en parents
+    const email = user.email;
+    const querySnapshot = await db.collection('parents').where('email', '==', email).limit(1).get();
+    if (!querySnapshot.empty) {
+      const parentDoc = querySnapshot.docs[0];
+      currentUser = { id: parentDoc.id, ...parentDoc.data() };
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('app-container').style.display = 'block';
+      if (currentUser.role !== 'admin') {
+        document.getElementById('config-tab').classList.add('hidden');
+        document.getElementById('fab').classList.add('hidden');
+        document.getElementById('add-parent-btn').classList.add('hidden');
+      } else {
+        document.getElementById('config-tab').classList.remove('hidden');
+        document.getElementById('fab').classList.remove('hidden');
+        document.getElementById('add-parent-btn').classList.remove('hidden');
+        loadAuditLogs();
+      }
+      startListeners();
+      render();
+    } else {
+      // El usuario autenticado no tiene documento en parents, cerrar sesión
+      alert('Usuario no autorizado');
+      await auth.signOut();
+      logout();
+    }
+  } else {
+    // No hay usuario autenticado
+    if (currentUser) logout(); // por si acaso
+    document.getElementById('login-container').style.display = 'block';
+    document.getElementById('app-container').style.display = 'none';
+  }
+});
 
 // ─── RENDER ──────────────────────────────────────────────
 function render() {
@@ -1658,7 +1715,7 @@ function shareStatus(bdayId) {
 function updateGroupName() {
   const input = document.getElementById('group-name-input');
   if (input) input.value = localStorage.getItem('groupName') || 'Mi Grupo Escolar';
-  document.title = '🎂 ' + (localStorage.getItem('groupName') || 'Cumples Salita Azul Belgrano');
+  document.title = '🎂 ' + (localStorage.getItem('groupName') || 'Cumples del Grado');
 }
 function saveGroupName() {
   const name = document.getElementById('group-name-input').value.trim() || 'Mi Grupo';
@@ -1805,31 +1862,10 @@ function showTab(tab) {
   if (tab === 'config' && currentUser.role === 'admin') loadAuditLogs();
 }
 
-// ─── INICIALIZACIÓN ─────────────────────────────────────
-listenToParents();
-listenToBirthdays();
-listenToFiles();
+// Ajustar visibilidad de botones según rol (ya se hace en login y onAuthStateChanged)
+// Inicialización: no se inician listeners hasta que haya usuario.
+// La función onAuthStateChanged ya se encarga de restaurar sesión.
 updateGroupName();
-
-auth.onAuthStateChanged((user) => {
-  if (!user && currentUser) {
-    logout();
-  }
-});
-
-// Ajustar visibilidad de botones según rol
-document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-  btn.addEventListener('click', () => {
-    if (currentUser && currentUser.role === 'admin') {
-      const fab = document.getElementById('fab');
-      if (i === 2) { // pestaña padres
-        fab.onclick = () => { document.getElementById('add-parent-form').style.display='block'; document.getElementById('new-parent-name').focus(); };
-      } else {
-        fab.onclick = openAddModal;
-      }
-    }
-  });
-});
 </script>
 </body>
 </html>
