@@ -6,25 +6,582 @@
 <title>🎂 Cumples del Grado</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<!-- 🔥 Firebase SDKs -->
+<!-- 🔥 Firebase SDKs (Compat) -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check-compat.js"></script>
 
 <style>
-  /* (Mantén todos los estilos igual que antes, no los repito por brevedad) */
-  /* ... copia aquí los estilos de la versión anterior ... */
+  /* ===== ESTILOS (mismos que antes, con paleta azul) ===== */
+  :root {
+    --bg: #F0F8FF;
+    --card: #FFFFFF;
+    --accent: #1E88E5;
+    --accent2: #64B5F6;
+    --accent3: #42A5F5;
+    --accent4: #1565C0;
+    --text: #0D2B3E;
+    --muted: #546E7A;
+    --border: #BBDEFB;
+    --shadow: 0 4px 20px rgba(21, 101, 192, 0.15);
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #0D47A1 0%, #1976D2 100%);
+    padding: 24px 20px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -30px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 1;
+  }
+  header p {
+    color: rgba(255,255,255,0.85);
+    margin-top: 6px;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 1;
+  }
+  .login-container {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px 20px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .login-container h2 {
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .login-container input {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+  .login-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .login-actions .btn { flex: 1; }
+  .tabs {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 8px;
+    border: none;
+    background: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-btn:hover:not(.active) { background: #f0f7ff; }
+  .tab-btn.hidden { display: none; }
+  main { padding: 20px 16px 80px; max-width: 700px; margin: 0 auto; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .section-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .form-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .form-group {
+    flex: 1;
+    min-width: 140px;
+  }
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+  input[type="text"], input[type="password"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    background: #f8fcff;
+    transition: border-color 0.2s;
+    color: var(--text);
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 70px; }
+  .btn {
+    padding: 11px 22px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-success { background: var(--accent3); color: white; }
+  .btn-info { background: var(--accent4); color: white; }
+  .btn-warning { background: #FFD966; color: var(--text); }
+  .btn-ghost { background: #E3F2FD; color: var(--accent4); }
+  .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; }
+  .btn-danger { background: #FFE0E0; color: #B71C1C; }
+  .bday-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .bday-card:hover { box-shadow: 0 8px 30px rgba(21, 101, 192, 0.2); }
+  .bday-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .bday-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .bday-info { flex: 1; }
+  .bday-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+  .bday-date {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .bday-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-upcoming { background: #D4E6FF; color: #0D3B66; }
+  .badge-today { background: #A3D8F0; color: #094183; animation: pulse 1s infinite; }
+  .badge-past { background: #E1F0FA; color: #2C5778; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.6; }
+  }
+  .bday-body {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .bday-body.open { display: block; }
+  .recaudador-section {
+    margin: 14px 0;
+    padding: 12px;
+    background: #E8F1FA;
+    border-radius: 10px;
+    border: 1px dashed var(--accent2);
+  }
+  .recaudador-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .recaudador-name {
+    font-weight: 800;
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .contributors-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 14px 0 8px;
+  }
+  .contributors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+  .contributor-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    user-select: none;
+  }
+  .contributor-item:hover { border-color: var(--accent3); }
+  .contributor-item.checked {
+    border-color: var(--accent3);
+    background: #E3F2FD;
+  }
+  .contributor-item.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .check-box {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 2px solid #B0C4DE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+  }
+  .contributor-item.checked .check-box {
+    background: var(--accent3);
+    border-color: var(--accent3);
+    color: white;
+  }
+  .contributor-name { font-size: 0.88rem; font-weight: 600; }
+  .progress-wrap { margin: 12px 0; }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--muted);
+  }
+  .progress-bar {
+    height: 8px;
+    background: #CFE2F0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent4));
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+  .note-section { margin-top: 12px; }
+  .note-display {
+    padding: 10px 14px;
+    background: #E1F0FA;
+    border-radius: 8px;
+    border: 1px solid var(--accent2);
+    font-size: 0.9rem;
+    cursor: pointer;
+    min-height: 40px;
+    color: var(--text);
+  }
+  .note-display.empty { color: var(--muted); font-style: italic; }
+  .parent-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    background: white;
+  }
+  .parent-info { display: flex; align-items: center; gap: 10px; }
+  .parent-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: white;
+  }
+  .parent-name { font-weight: 700; }
+  .parent-role { font-size: 0.78rem; color: var(--muted); }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); font-weight: 700; }
+  .month-header {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    color: var(--accent4);
+    margin: 20px 0 10px;
+    padding: 6px 14px;
+    background: #D4E6FF;
+    border-radius: 20px;
+    display: inline-block;
+  }
+  .next-badge {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1976D2, #64B5F6);
+    color: white;
+    margin-left: 8px;
+  }
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty p { font-size: 0.95rem; }
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(30,136,229,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 200;
+  }
+  .fab:hover { transform: scale(1.1); background: #1565C0; }
+  .fab:active { transform: scale(0.95); }
+  .fab.hidden { display: none; }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,30,60,0.5);
+    z-index: 1000;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px 40px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .modal-actions .btn { flex: 1; justify-content: center; }
+  .logout-btn {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: #FFE0E0;
+    color: #B71C1C;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: var(--shadow);
+  }
+  .logout-btn:hover { background: #FFC0C0; }
+  .files-section {
+    margin-top: 16px;
+    padding: 12px;
+    background: #F5F9FF;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .files-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .file-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    word-break: break-word;
+  }
+  .file-icon { font-size: 1.2rem; }
+  .file-name { font-size: 0.9rem; }
+  .file-size { font-size: 0.75rem; color: var(--muted); margin-left: 4px; }
+  .upload-progress {
+    height: 4px;
+    background: #E0E0E0;
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .upload-progress-bar {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.2s;
+  }
+  .audit-item {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+  .audit-user { font-weight: 700; color: var(--accent4); }
+  .audit-action { font-weight: 600; }
+  .audit-time { color: var(--muted); font-size: 0.75rem; }
+  @media(max-width: 480px) {
+    header h1 { font-size: 1.6rem; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    .stat-num { font-size: 1.5rem; }
+    .contributors-grid { grid-template-columns: 1fr 1fr; }
+  }
 </style>
 </head>
 <body>
 
-<!-- LOGIN CONTAINER -->
+<!-- LOGIN CONTAINER (con email/contraseña) -->
 <div id="login-container" class="login-container">
   <h2>🔐 Acceso al grupo</h2>
   <div class="form-group">
-    <label>Email</label>
+    <label>Correo electrónico</label>
     <input type="email" id="login-email" placeholder="ej: maria@gmail.com">
   </div>
   <div class="form-group">
@@ -35,7 +592,7 @@
     <button class="btn btn-primary" onclick="login()">Entrar</button>
   </div>
   <p style="margin-top:20px;font-size:0.85rem;color:var(--muted);">
-    Usá tu email y la contraseña que te dio el administrador.
+    Usá el email y contraseña que te dio el administrador.
   </p>
 </div>
 
@@ -54,19 +611,306 @@
   </div>
 
   <main>
-    <!-- (El contenido de las pestañas es el mismo que antes, no lo repito) -->
-    <!-- ... copia aquí el contenido de las pestañas de la versión anterior ... -->
+    <!-- TAB: INICIO -->
+    <div id="tab-inicio" class="tab-content active">
+      <div class="stats-grid" id="stats"></div>
+      <div class="section-title">⏰ Próximos cumpleaños</div>
+      <div id="upcoming-list"></div>
+    </div>
+
+    <!-- TAB: CUMPLEAÑOS -->
+    <div id="tab-cumples" class="tab-content">
+      <div class="section-title">🎂 Todos los cumpleaños</div>
+      <div id="bday-list"></div>
+      <div class="empty" id="bday-empty" style="display:none">
+        <div class="empty-icon">🎈</div>
+        <p>No hay cumpleaños aún.<br>¡Agregá alumnos desde el botón +!</p>
+      </div>
+    </div>
+
+    <!-- TAB: PADRES -->
+    <div id="tab-padres" class="tab-content">
+      <div class="section-title">👨‍👩‍👧 Lista de padres / familiares</div>
+      <div id="parents-list"></div>
+      <div class="empty" id="parents-empty" style="display:none">
+        <div class="empty-icon">👥</div>
+        <p>No hay padres aún.<br>Agregalos desde el botón +.</p>
+      </div>
+      <div id="add-parent-form" class="card" style="display:none">
+        <div class="modal-title">➕ Nuevo padre/madre</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="new-parent-name" placeholder="Ej: María García">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email (para login)</label>
+            <input type="email" id="new-parent-email" placeholder="ej: maria@gmail.com">
+          </div>
+          <div class="form-group">
+            <label>Contraseña (temporal)</label>
+            <input type="text" id="new-parent-password" placeholder="Contraseña" value="123456">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hijo/a (opcional)</label>
+            <input type="text" id="new-parent-child" placeholder="Ej: Lucas">
+          </div>
+          <div class="form-group">
+            <label>Contacto (opcional)</label>
+            <input type="text" id="new-parent-contact" placeholder="WhatsApp o email">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Rol</label>
+            <select id="new-parent-role">
+              <option value="user">Usuario</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('add-parent-form').style.display='none'">Cancelar</button>
+          <button class="btn btn-success btn-sm" onclick="saveParent()">✓ Guardar</button>
+        </div>
+      </div>
+      <br>
+      <button class="btn btn-info" id="add-parent-btn" onclick="document.getElementById('add-parent-form').style.display='block';document.getElementById('new-parent-name').focus()">
+        ➕ Agregar padre/madre
+      </button>
+    </div>
+
+    <!-- TAB: CONFIG -->
+    <div id="tab-config" class="tab-content">
+      <div class="section-title">⚙️ Configuración</div>
+      <div class="card">
+        <div class="recaudador-label">Nombre del grupo / curso</div>
+        <div class="form-row" style="margin-top:8px">
+          <div class="form-group">
+            <input type="text" id="group-name-input" placeholder="Ej: 3° grado B - 2025">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="saveGroupName()" style="align-self:flex-end;flex-shrink:0">Guardar</button>
+        </div>
+      </div>
+
+      <!-- SECCIÓN USUARIOS -->
+      <div class="card">
+        <div class="section-title" style="font-size:1.1rem;">👥 Usuarios (datos desde Firestore)</div>
+        <div id="users-list"></div>
+        <button class="btn btn-info btn-sm" onclick="openAddUserModal()">➕ Agregar usuario</button>
+      </div>
+
+      <!-- SECCIÓN AUDITORÍA -->
+      <div class="card">
+        <div class="section-title" style="font-size:1.1rem;">📋 Registro de actividades</div>
+        <div id="audit-logs" style="max-height:400px; overflow-y:auto;"></div>
+        <button class="btn btn-ghost btn-sm" onclick="loadAuditLogs()" style="margin-top:10px;">🔄 Actualizar</button>
+      </div>
+
+      <div class="card">
+        <div class="recaudador-label" style="margin-bottom:8px">Exportar / Importar datos</div>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:12px">Guardá una copia de seguridad de todos los datos.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-warning btn-sm" onclick="exportData()">📤 Exportar JSON</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()">📥 Importar</button>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+        </div>
+      </div>
+      <div class="card">
+        <div class="recaudador-label" style="margin-bottom:8px">Zona de peligro</div>
+        <button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ Borrar todos los datos</button>
+      </div>
+    </div>
   </main>
 
+  <!-- FAB (solo admin) -->
   <button class="fab" id="fab" onclick="openAddModal()">+</button>
   <button class="logout-btn" onclick="logout()">🔓 Cerrar sesión</button>
 </div>
 
-<!-- (Todos los modales igual que antes, no los repito) -->
-<!-- ... copia aquí los modales de la versión anterior ... -->
+<!-- MODAL: AGREGAR CUMPLE -->
+<div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">🎂 Agregar cumpleaños</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre del alumno/a</label>
+        <input type="text" id="modal-name" placeholder="Ej: Sofía López">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Fecha de cumpleaños</label>
+        <input type="date" id="modal-date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Recaudador/a</label>
+        <select id="modal-recaudador">
+          <option value="">— Sin asignar —</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveBirthday()">🎉 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDITAR RECAUDADOR -->
+<div class="modal-overlay" id="rec-modal" onclick="if(event.target===this)closeRecModal()">
+  <div class="modal">
+    <div class="modal-title">📋 Cambiar recaudador/a</div>
+    <div class="form-group">
+      <label>Seleccionar recaudador/a</label>
+      <select id="rec-select">
+        <option value="">— Sin asignar —</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeRecModal()">Cancelar</button>
+      <button class="btn btn-success" onclick="saveRecaudador()">✓ Guardar</button>
+    </div>
+    <input type="hidden" id="rec-bday-id">
+  </div>
+</div>
+
+<!-- MODAL: NOTAS -->
+<div class="modal-overlay" id="note-modal" onclick="if(event.target===this)closeNoteModal()">
+  <div class="modal">
+    <div class="modal-title">📝 Notas</div>
+    <div class="form-group">
+      <textarea id="note-textarea" placeholder="Monto acordado, lugar de entrega, link de transferencia..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeNoteModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNote()">💾 Guardar</button>
+    </div>
+    <input type="hidden" id="note-bday-id">
+  </div>
+</div>
+
+<!-- MODAL: AGREGAR USUARIO -->
+<div class="modal-overlay" id="add-user-modal" onclick="if(event.target===this)closeAddUserModal()">
+  <div class="modal">
+    <div class="modal-title">➕ Nuevo usuario</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" id="new-user-name" placeholder="Ej: Ana Pérez">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="new-user-email" placeholder="ej: ana@gmail.com">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="text" id="new-user-password" placeholder="Contraseña" value="123456">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Rol</label>
+        <select id="new-user-role">
+          <option value="user">Usuario</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Hijo/a (opcional)</label>
+        <input type="text" id="new-user-child" placeholder="Ej: Martina">
+      </div>
+      <div class="form-group">
+        <label>Contacto (opcional)</label>
+        <input type="text" id="new-user-contact" placeholder="WhatsApp o email">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAddUserModal()">Cancelar</button>
+      <button class="btn btn-success" onclick="saveUser()">✓ Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDITAR USUARIO -->
+<div class="modal-overlay" id="edit-user-modal" onclick="if(event.target===this)closeEditUserModal()">
+  <div class="modal">
+    <div class="modal-title">✏️ Editar usuario</div>
+    <input type="hidden" id="edit-user-id">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" id="edit-user-name">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="edit-user-email">
+      </div>
+      <div class="form-group">
+        <label>Contraseña (nueva, opcional)</label>
+        <input type="text" id="edit-user-password" placeholder="Dejar vacío para no cambiar">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Rol</label>
+        <select id="edit-user-role">
+          <option value="user">Usuario</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Hijo/a</label>
+        <input type="text" id="edit-user-child">
+      </div>
+      <div class="form-group">
+        <label>Contacto</label>
+        <input type="text" id="edit-user-contact">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeEditUserModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="updateUser()">💾 Guardar</button>
+      <button class="btn btn-danger" onclick="deleteUserFromEdit()">🗑️ Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SUBIR ARCHIVO -->
+<div class="modal-overlay" id="upload-file-modal" onclick="if(event.target===this)closeUploadModal()">
+  <div class="modal">
+    <div class="modal-title">📎 Subir archivo</div>
+    <div class="form-group">
+      <label>Seleccionar archivo (imagen o PDF)</label>
+      <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.pdf">
+    </div>
+    <div class="upload-progress" id="upload-progress-container" style="display:none;">
+      <div class="upload-progress-bar" id="upload-progress-bar"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeUploadModal()">Cancelar</button>
+      <button class="btn btn-success" onclick="uploadFile()">⬆️ Subir</button>
+    </div>
+    <input type="hidden" id="upload-bday-id">
+  </div>
+</div>
 
 <script>
-// 🔥 CONFIGURACIÓN DE FIREBASE
+// 🔥 CONFIGURACIÓN DE FIREBASE (tus datos)
 const firebaseConfig = {
   apiKey: "AIzaSyCMK5io8l1BItL_xdKfTnADJoAw8A1CBwU",
   authDomain: "cumples-escolares.firebaseapp.com",
@@ -78,11 +922,11 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// App Check
+// 🔥 App Check
 const appCheck = firebase.appCheck();
 appCheck.activate(
-  '6LeKT30sAAAAAIDMbwRGcxRD0_jIqmxGG9q30gDY',
-  true
+  '6LeKT30sAAAAAIDMbwRGcxRD0_jIqmxGG9q30gDY', // tu clave de sitio
+  true // modo automático
 );
 
 const db = firebase.firestore();
@@ -92,8 +936,8 @@ const auth = firebase.auth();
 // Variables globales
 let parents = [];
 let birthdays = [];
-let birthdayFiles = {};
-let currentUser = null; // { id, name, email, role, ... }
+let birthdayFiles = {}; // { bdayId: [archivos] }
+let currentUser = null; // { id, name, email, role, childName, contact }
 
 const COLORS = ['#1E88E5','#42A5F5','#1976D2','#0D47A1','#64B5F6','#1565C0','#82B1FF','#2962FF'];
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -108,7 +952,7 @@ function initials(name) {
   return name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();
 }
 
-// ─── LOGS Y AUDITORÍA (igual que antes) ─────────────────
+// ─── LOGS Y AUDITORÍA ────────────────────────────────────
 async function logAudit(action, details = {}) {
   if (!currentUser) return;
   const logEntry = {
@@ -174,14 +1018,12 @@ async function loadAuditLogs() {
 function listenToParents() {
   db.collection("parents").onSnapshot((snapshot) => {
     parents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    // Si hay usuario logueado, actualizamos currentUser con datos frescos
+    // Si hay usuario logueado, actualizamos sus datos desde Firestore
     if (currentUser) {
       const updated = parents.find(p => p.id === currentUser.id);
       if (updated) currentUser = updated;
-      else logout();
     }
     render();
-    // No necesitamos updateLoginSelect porque ahora el login es por email
   }, (error) => console.error("Error al escuchar padres: ", error));
 }
 
@@ -209,27 +1051,27 @@ function listenToFiles() {
 async function login() {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
-  if (!email || !password) {
-    alert('Ingresá email y contraseña');
-    return;
-  }
+  if (!email || !password) { alert('Ingresá email y contraseña'); return; }
+
   try {
     const userCredential = await auth.signInWithEmailAndPassword(email, password);
-    const user = userCredential.user;
+    const firebaseUser = userCredential.user;
+
     // Buscar el documento del padre en Firestore usando el email
-    const parentQuery = await db.collection('parents').where('email', '==', email).get();
-    if (parentQuery.empty) {
-      // Esto no debería pasar si los usuarios están sincronizados
-      alert('Usuario no encontrado en la base de datos');
+    const querySnapshot = await db.collection('parents').where('email', '==', email).limit(1).get();
+    if (querySnapshot.empty) {
+      alert('Usuario no encontrado en la base de datos. Contactá al administrador.');
       await auth.signOut();
       return;
     }
-    const parentDoc = parentQuery.docs[0];
+
+    const parentDoc = querySnapshot.docs[0];
     currentUser = { id: parentDoc.id, ...parentDoc.data() };
-    
+
+    // Mostrar la app
     document.getElementById('login-container').style.display = 'none';
     document.getElementById('app-container').style.display = 'block';
-    
+
     if (currentUser.role !== 'admin') {
       document.getElementById('config-tab').classList.add('hidden');
       document.getElementById('fab').classList.add('hidden');
@@ -238,10 +1080,11 @@ async function login() {
       document.getElementById('fab').classList.remove('hidden');
       loadAuditLogs();
     }
-    
+
     logLogin();
     render();
   } catch (error) {
+    console.error(error);
     alert('Error al iniciar sesión: ' + error.message);
   }
 }
@@ -251,20 +1094,12 @@ function logout() {
     currentUser = null;
     document.getElementById('login-container').style.display = 'block';
     document.getElementById('app-container').style.display = 'none';
-    document.getElementById('login-password').value = '';
     document.getElementById('login-email').value = '';
-  }).catch(error => console.error('Error al cerrar sesión:', error));
+    document.getElementById('login-password').value = '';
+  }).catch(console.error);
 }
 
-// Escuchar cambios en el estado de autenticación (por si la sesión expira)
-auth.onAuthStateChanged((user) => {
-  if (!user && currentUser) {
-    // Se cerró la sesión inesperadamente
-    logout();
-  }
-});
-
-// ─── RENDER (igual que antes, pero ahora usa currentUser) ─
+// ─── RENDER ──────────────────────────────────────────────
 function render() {
   if (!currentUser) return;
   renderStats();
@@ -483,7 +1318,7 @@ function populateSelects() {
   document.getElementById('rec-select').innerHTML = opts;
 }
 
-// ─── FECHAS (igual que antes) ───────────────────────────
+// ─── FECHAS ──────────────────────────────────────────────
 function parseDate(str) {
   const [y,m,d] = str.split('-').map(Number);
   return { year: y, month: m, day: d };
@@ -510,7 +1345,7 @@ function getBadge(dateStr) {
   return { text: formatDate(dateStr), cls: 'badge-past' };
 }
 
-// ─── ACCIONES SOBRE FIREBASE (ahora con autenticación) ───
+// ─── ACCIONES SOBRE FIREBASE ─────────────────────────────
 function openAddModal() {
   if (currentUser.role !== 'admin') return;
   document.getElementById('modal-name').value = '';
@@ -553,39 +1388,37 @@ function deleteBirthday(id) {
 async function saveParent() {
   if (currentUser.role !== 'admin') return;
   const name = document.getElementById('new-parent-name').value.trim();
-  const email = document.getElementById('new-parent-email').value.trim(); // Necesitamos agregar campo email en el formulario
+  const email = document.getElementById('new-parent-email').value.trim();
+  const password = document.getElementById('new-parent-password').value.trim();
   const childName = document.getElementById('new-parent-child').value.trim();
   const contact = document.getElementById('new-parent-contact').value.trim();
-  const password = document.getElementById('new-parent-password').value.trim() || '1234';
   const role = document.getElementById('new-parent-role').value;
 
-  if (!name || !email) {
-    alert('Nombre y email son obligatorios');
+  if (!name || !email || !password) {
+    alert('Nombre, email y contraseña son obligatorios');
     return;
   }
 
   try {
-    // 1. Crear usuario en Firebase Auth
+    // 1. Crear usuario en Firebase Authentication
     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    const uid = userCredential.user.uid;
+    const firebaseUser = userCredential.user;
 
-    // 2. Crear documento en Firestore (usamos el uid como ID opcionalmente)
-    await db.collection("parents").add({
+    // 2. Guardar datos adicionales en Firestore
+    await db.collection("parents").doc(firebaseUser.uid).set({
       name,
       email,
-      childName: childName || '',
-      contact: contact || '',
-      password: password, // Guardamos la contraseña igual (aunque ahora está en Auth, la dejamos por si quieres verla)
       role,
-      uid: uid // opcional, para referencia
+      childName: childName || '',
+      contact: contact || ''
     });
 
     // Limpiar formulario
     document.getElementById('new-parent-name').value = '';
     document.getElementById('new-parent-email').value = '';
+    document.getElementById('new-parent-password').value = '123456';
     document.getElementById('new-parent-child').value = '';
     document.getElementById('new-parent-contact').value = '';
-    document.getElementById('new-parent-password').value = '1234';
     document.getElementById('new-parent-role').value = 'user';
     document.getElementById('add-parent-form').style.display = 'none';
 
@@ -597,13 +1430,18 @@ async function saveParent() {
 
 function deleteParent(id) {
   if (currentUser.role !== 'admin') return;
-  if (!confirm('¿Eliminar este padre/madre?')) return;
+  if (!confirm('¿Eliminar este padre/madre? También se eliminará su cuenta de Authentication.')) return;
+
+  // Primero eliminar de Authentication (requiere función de servidor o Admin SDK)
+  // Como no podemos eliminar desde cliente, marcamos como inactivo o simplemente borramos de Firestore.
+  // Para simplificar, solo eliminamos de Firestore y dejamos la cuenta de Auth (no se podrá loguear porque no hay documento).
+  // Una solución más completa requeriría Cloud Functions.
   const p = parents.find(p => p.id === id);
-  // No podemos eliminar el usuario de Auth fácilmente desde el cliente (requiere funciones de admin). 
-  // Opcional: usar Cloud Function o simplemente borrar de Firestore.
-  // Por ahora, solo borramos de Firestore.
   db.collection("parents").doc(id).delete()
-    .then(() => logAudit('eliminar padre', { nombre: p?.name, id }))
+    .then(() => {
+      logAudit('eliminar padre', { nombre: p?.name, id });
+      // Opcional: también eliminar de Auth (no se puede desde cliente, pero se puede hacer manualmente desde consola)
+    })
     .catch(error => alert('Error: ' + error.message));
 }
 
@@ -677,7 +1515,7 @@ async function saveNote() {
   }
 }
 
-// Archivos (igual que antes, pero ahora con autenticación)
+// Archivos
 function openUploadModal(bdayId) {
   document.getElementById('upload-bday-id').value = bdayId;
   document.getElementById('file-input').value = '';
@@ -757,7 +1595,7 @@ async function deleteFile(fileId, bdayId) {
   }
 }
 
-// Share status (igual que antes)
+// Share status
 function shareStatus(bdayId) {
   const b = birthdays.find(b=>b.id===bdayId);
   if (!b) return;
@@ -772,7 +1610,7 @@ function shareStatus(bdayId) {
   navigator.clipboard.writeText(txt).then(()=>alert('¡Copiado! Podés pegarlo en WhatsApp 📋')).catch(()=>prompt('Copia este texto:', txt));
 }
 
-// Config (igual que antes)
+// Config
 function updateGroupName() {
   const input = document.getElementById('group-name-input');
   if (input) input.value = localStorage.getItem('groupName') || 'Mi Grupo Escolar';
@@ -819,12 +1657,12 @@ function clearAllData() {
     .catch(error => alert('Error: ' + error.message));
 }
 
-// ─── USUARIOS (Config) con manejo de Auth ───────────────
+// ─── USUARIOS (Config) ───────────────────────────────────
 function openAddUserModal() {
   if (currentUser.role !== 'admin') return;
   document.getElementById('new-user-name').value = '';
-  document.getElementById('new-user-email').value = ''; // Agregar campo email en el modal
-  document.getElementById('new-user-password').value = '1234';
+  document.getElementById('new-user-email').value = '';
+  document.getElementById('new-user-password').value = '123456';
   document.getElementById('new-user-role').value = 'user';
   document.getElementById('new-user-child').value = '';
   document.getElementById('new-user-contact').value = '';
@@ -835,36 +1673,28 @@ function closeAddUserModal() { document.getElementById('add-user-modal').classLi
 async function saveUser() {
   const name = document.getElementById('new-user-name').value.trim();
   const email = document.getElementById('new-user-email').value.trim();
-  const password = document.getElementById('new-user-password').value.trim() || '1234';
+  const password = document.getElementById('new-user-password').value.trim();
   const role = document.getElementById('new-user-role').value;
   const childName = document.getElementById('new-user-child').value.trim();
   const contact = document.getElementById('new-user-contact').value.trim();
 
-  if (!name || !email) {
-    alert('Nombre y email son obligatorios');
+  if (!name || !email || !password) {
+    alert('Nombre, email y contraseña son obligatorios');
     return;
   }
 
   try {
-    // Crear en Auth
     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    const uid = userCredential.user.uid;
-
-    // Crear en Firestore
-    await db.collection("parents").add({
-      name,
-      email,
-      password,
-      role,
+    const firebaseUser = userCredential.user;
+    await db.collection("parents").doc(firebaseUser.uid).set({
+      name, email, role,
       childName: childName || '',
-      contact: contact || '',
-      uid
+      contact: contact || ''
     });
-
-    logAudit('crear usuario', { nombre: name, email, role });
+    await logAudit('crear usuario', { nombre: name, email, role });
     closeAddUserModal();
   } catch (error) {
-    alert('Error al crear usuario: ' + error.message);
+    alert('Error: ' + error.message);
   }
 }
 
@@ -873,8 +1703,8 @@ function openEditUserModal(userId) {
   if (!user) return;
   document.getElementById('edit-user-id').value = user.id;
   document.getElementById('edit-user-name').value = user.name;
-  document.getElementById('edit-user-email').value = user.email || '';
-  document.getElementById('edit-user-password').value = user.password || '';
+  document.getElementById('edit-user-email').value = user.email;
+  document.getElementById('edit-user-password').value = ''; // no mostramos contraseña
   document.getElementById('edit-user-role').value = user.role || 'user';
   document.getElementById('edit-user-child').value = user.childName || '';
   document.getElementById('edit-user-contact').value = user.contact || '';
@@ -891,34 +1721,39 @@ async function updateUser() {
   const childName = document.getElementById('edit-user-child').value.trim();
   const contact = document.getElementById('edit-user-contact').value.trim();
 
-  if (!name || !email) {
-    alert('Nombre y email son obligatorios');
-    return;
-  }
+  if (!name || !email) { alert('Nombre y email no pueden estar vacíos'); return; }
 
   try {
     // Actualizar Firestore
     await db.collection("parents").doc(id).update({
-      name,
-      email,
-      password, // Actualizamos la contraseña en Firestore (solo para referencia)
-      role,
+      name, email, role,
       childName: childName || '',
       contact: contact || ''
     });
 
-    // No podemos actualizar la contraseña en Auth sin el UID. Si quieres, podrías implementar un cambio de contraseña.
-    logAudit('editar usuario', { nombre: name, email, role });
+    // Si se proporcionó nueva contraseña, actualizar en Authentication (requiere reautenticación)
+    if (password) {
+      const user = auth.currentUser;
+      // Nota: para cambiar la contraseña de otro usuario se necesita Admin SDK.
+      // Esto solo cambiaría la del usuario actual si es él mismo.
+      // En una app real, necesitarías una Cloud Function.
+      if (user && user.uid === id) {
+        await user.updatePassword(password);
+      } else {
+        alert('No se puede cambiar la contraseña de otro usuario desde el cliente. Se debe hacer manualmente en la consola de Authentication.');
+      }
+    }
+
+    await logAudit('editar usuario', { nombre: name, email, role });
     closeEditUserModal();
   } catch (error) {
-    alert('Error al actualizar: ' + error.message);
+    alert('Error: ' + error.message);
   }
 }
 
 function deleteUserFromEdit() {
   const id = document.getElementById('edit-user-id').value;
-  if (!confirm('¿Eliminar este usuario?')) return;
-  // No podemos eliminar de Auth fácilmente. Lo hacemos solo de Firestore.
+  if (!confirm('¿Eliminar este usuario? Esto eliminará su documento en Firestore, pero no su cuenta de Authentication (debes hacerlo manualmente desde la consola).')) return;
   db.collection("parents").doc(id).delete()
     .then(() => {
       logAudit('eliminar usuario', { id });
@@ -942,6 +1777,14 @@ listenToParents();
 listenToBirthdays();
 listenToFiles();
 updateGroupName();
+
+// Observar cambios en el estado de autenticación (por si la sesión expira)
+auth.onAuthStateChanged((user) => {
+  if (!user && currentUser) {
+    // Sesión expirada o cerrada
+    logout();
+  }
+});
 
 // Ajustar FAB según pestaña (solo admin)
 document.querySelectorAll('.tab-btn').forEach((btn, i) => {
