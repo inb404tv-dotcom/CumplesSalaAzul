@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎂 Cumples del Grado</title>
+<title>🎂 Cumples Salita Azul Belgrano</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <!-- 🔥 Firebase SDKs -->
@@ -624,7 +624,7 @@
 <!-- APP CONTAINER (visible solo cuando hay sesión) -->
 <div id="app-container" style="display:none;">
   <header>
-    <h1>🎂 Cumples del Grado</h1>
+    <h1>🎂 Cumples Salita Azul Belgrano</h1>
     <p>Coordinación de regalos del curso</p>
   </header>
 
@@ -665,7 +665,7 @@
         <div class="modal-title">➕ Nuevo padre/madre</div>
         <div class="form-row">
           <div class="form-group">
-            <label>Nombre del Padre/Madre</label>
+            <label>Nombre del Niñ@</label>
             <input type="text" id="new-parent-name" placeholder="Ej: María García">
           </div>
         </div>
@@ -681,7 +681,7 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Nombre del Niñ@</label>
+            <label>Nombre del Padre/Madre</label>
             <input type="text" id="new-parent-child" placeholder="Ej: Lucas">
           </div>
         </div>
@@ -824,7 +824,7 @@
     <div class="modal-title">➕ Nuevo usuario</div>
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del Padre/Madre</label>
+        <label>Nombre del Niñ@/e</label>
         <input type="text" id="new-user-name" placeholder="Ej: Ana Pérez">
       </div>
     </div>
@@ -840,7 +840,7 @@
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del Niñ@</label>
+        <label>Nombre del Padre/Madre</label>
         <input type="text" id="new-user-child" placeholder="Ej: Martina">
       </div>
     </div>
@@ -867,7 +867,7 @@
     <input type="hidden" id="edit-user-id">
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del Padre/Madre</label>
+        <label>Nombre del Niñ@</label>
         <input type="text" id="edit-user-name">
       </div>
     </div>
@@ -883,7 +883,7 @@
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del Niñ@</label>
+        <label>Nombre del Padre/Madre</label>
         <input type="text" id="edit-user-child">
       </div>
     </div>
@@ -1658,7 +1658,7 @@ function shareStatus(bdayId) {
 function updateGroupName() {
   const input = document.getElementById('group-name-input');
   if (input) input.value = localStorage.getItem('groupName') || 'Mi Grupo Escolar';
-  document.title = '🎂 ' + (localStorage.getItem('groupName') || 'Cumples del Grado');
+  document.title = '🎂 ' + (localStorage.getItem('groupName') || 'Cumples Salita Azul Belgrano');
 }
 function saveGroupName() {
   const name = document.getElementById('group-name-input').value.trim() || 'Mi Grupo';
