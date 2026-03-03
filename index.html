@@ -1655,7 +1655,18 @@ function closeUploadModal() {
   document.getElementById('upload-file-modal').classList.remove('open');
 }
 
-// 🔁 FUNCIÓN MODIFICADA: renombra el archivo con el nombre del usuario
+// 🔁 FUNCIÓN MODIFICADA: renombra el archivo con el nombre del usuario y fecha
+function getFormattedTimestamp() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const seconds = String(d.getSeconds()).padStart(2, '0');
+  return `${year}${month}${day}_${hours}${minutes}${seconds}`;
+}
+
 async function uploadFile() {
   const bdayId = document.getElementById('upload-bday-id').value;
   const fileInput = document.getElementById('file-input');
@@ -1667,11 +1678,11 @@ async function uploadFile() {
   }
   const bday = birthdays.find(b => b.id === bdayId);
   
-  // Generar nombre con el nombre del usuario logueado
+  // Generar nombre con el nombre del usuario y fecha
   const userName = currentUser.name.replace(/\s+/g, '_'); // Reemplazar espacios por guiones bajos
-  const timestamp = Date.now();
-  const originalName = file.name;
-  const newFileName = `${userName}_${timestamp}_${originalName}`;
+  const timestamp = getFormattedTimestamp();
+  const extension = file.name.split('.').pop();
+  const newFileName = `${userName}_${timestamp}.${extension}`;
   
   const storageRef = storage.ref(`cumples/${bdayId}/${newFileName}`);
   const uploadTask = storageRef.put(file);
@@ -1695,7 +1706,8 @@ async function uploadFile() {
       try {
         await db.collection('birthday_files').add({
           birthdayId: bdayId,
-          fileName: originalName, // Guardamos el nombre original para mostrar
+          fileName: newFileName, // Guardamos el nombre renombrado para mostrar
+          originalName: file.name, // Opcional: conservar el original
           fileType: file.type,
           fileSize: file.size,
           url: url,
@@ -1705,7 +1717,7 @@ async function uploadFile() {
         });
         await logAudit('subir archivo', {
           cumpleaños: bday?.name,
-          archivo: originalName
+          archivo: newFileName
         });
         closeUploadModal();
       } catch (error) {
