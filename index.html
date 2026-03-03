@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎂 Cumpleaños Salita Azul Belgrano</title>
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <!-- 🔥 Firebase SDKs -->
@@ -608,7 +610,7 @@
   <h2>🔐 Cumpleaños Salita Azul Belgrano</h2>
   <div class="form-group">
     <label>Correo electrónico</label>
-    <input type="email" id="login-email" placeholder="ej: felipe.t@inb404.com">
+    <input type="email" id="login-email" placeholder="ej: maria@gmail.com">
   </div>
   <div class="form-group">
     <label>Contraseña</label>
@@ -673,7 +675,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Email (para login)</label>
-            <input type="email" id="new-parent-email" placeholder="ej: felipe.t@inb404.com">
+            <input type="email" id="new-parent-email" placeholder="ej: maria@gmail.com">
           </div>
           <div class="form-group">
             <label>Contraseña (temporal)</label>
@@ -1154,7 +1156,7 @@ function logout() {
     parents = [];
     birthdays = [];
     birthdayFiles = {};
-    openBirthdayIds.clear(); // Limpiar desplegables
+    openBirthdayIds.clear();
     document.getElementById('login-container').style.display = 'block';
     document.getElementById('app-container').style.display = 'none';
     document.getElementById('login-email').value = '';
@@ -1508,7 +1510,7 @@ function deleteBirthday(id) {
   const b = birthdays.find(b => b.id === id);
   db.collection("birthdays").doc(id).delete()
     .then(() => {
-      openBirthdayIds.delete(id); // Eliminar del set de abiertos
+      openBirthdayIds.delete(id);
       logAudit('eliminar cumpleaños', { nombre: b?.name, id });
     })
     .catch(error => alert('Error: ' + error.message));
@@ -1652,6 +1654,8 @@ function openUploadModal(bdayId) {
 function closeUploadModal() {
   document.getElementById('upload-file-modal').classList.remove('open');
 }
+
+// 🔁 FUNCIÓN MODIFICADA: renombra el archivo con el nombre del usuario
 async function uploadFile() {
   const bdayId = document.getElementById('upload-bday-id').value;
   const fileInput = document.getElementById('file-input');
@@ -1662,8 +1666,14 @@ async function uploadFile() {
     return;
   }
   const bday = birthdays.find(b => b.id === bdayId);
-  const fileName = `${Date.now()}_${file.name}`;
-  const storageRef = storage.ref(`cumples/${bdayId}/${fileName}`);
+  
+  // Generar nombre con el nombre del usuario logueado
+  const userName = currentUser.name.replace(/\s+/g, '_'); // Reemplazar espacios por guiones bajos
+  const timestamp = Date.now();
+  const originalName = file.name;
+  const newFileName = `${userName}_${timestamp}_${originalName}`;
+  
+  const storageRef = storage.ref(`cumples/${bdayId}/${newFileName}`);
   const uploadTask = storageRef.put(file);
 
   const progressContainer = document.getElementById('upload-progress-container');
@@ -1685,7 +1695,7 @@ async function uploadFile() {
       try {
         await db.collection('birthday_files').add({
           birthdayId: bdayId,
-          fileName: file.name,
+          fileName: originalName, // Guardamos el nombre original para mostrar
           fileType: file.type,
           fileSize: file.size,
           url: url,
@@ -1695,7 +1705,7 @@ async function uploadFile() {
         });
         await logAudit('subir archivo', {
           cumpleaños: bday?.name,
-          archivo: file.name
+          archivo: originalName
         });
         closeUploadModal();
       } catch (error) {
